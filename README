@@ -1,0 +1,24 @@
+1,make local dir
+2,git init /path/to/local
+3,cd /path/to/local
+4,git add .
+5,git commit -m "Initial Commit"
+
+
+6,make /path/to/remote in  dropbox dir
+7,git init --bare /path/to/remote
+
+8,cd /path/to/local
+9,git remote add dropbox /path/to/remote
+
+10,git push -u dropbox master
+11,after editing
+12,git add file
+13,git commit -m "Initial Commit"
+14,git push
+
+15,git clone -o dropbox /path/to/remote
+16,git pull
+
+git config --global user.name "YOUR NAME"
+git config --global user.email "YOUR EMAIL ADDRESS"
