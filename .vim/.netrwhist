@@ -1,6 +1,7 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =4
+let g:netrw_dirhist_cnt =5
 let g:netrw_dirhist_1='/Users/uranus/Desktop/working/multiple_lensing_planes/c_mpl/read_alpha_cv'
 let g:netrw_dirhist_2='/Users/uranus/.local/lib'
 let g:netrw_dirhist_3='/Users/uranus/Desktop/working/lensing_modeling/glamroc_and_mao/image'
 let g:netrw_dirhist_4='/Users/uranus/dot_vim_files'
+let g:netrw_dirhist_5='/Users/uranus/GitHub'
