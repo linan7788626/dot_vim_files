@@ -45,6 +45,7 @@ set spelllang=en
 set spellfile=$HOME/.vim/spell/en.utf-8.add
 hi SpellBad term=reverse cterm=reverse ctermfg=255 guifg=Black guibg=Yellow 
 set nospell
+set clipboard=unnamed
 
 set tw=80
 
