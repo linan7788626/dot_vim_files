@@ -4,7 +4,9 @@ set encoding=utf-8
 set t_Co=256
 
 set background=dark
-colorscheme solarized
+""colorscheme solarized
+colorscheme molokai
+""colorscheme nolokai
 ""colorscheme ir_black
 ""colorscheme badwolf
 
@@ -13,11 +15,11 @@ let g:indent_guides_auto_colors = 0
 let g:bufferline_echo=0
 ""let g:pymode = 0
 
-let g:solarized_contrast='high'
-let g:solarized_visibility="high"
-""let g:solarized_termtrans=1
-let g:solarized_termcolors=256
-""let g:solarized_menu=0
+"let g:solarized_contrast='high'
+"let g:solarized_visibility="high"
+"""let g:solarized_termtrans=1
+"let g:solarized_termcolors=256
+"""let g:solarized_menu=0
 
 
 let g:airline_theme='powerlineish'
