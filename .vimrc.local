@@ -4,9 +4,9 @@ set encoding=utf-8
 set t_Co=256
 
 set background=dark
-""colorscheme solarized
+colorscheme solarized
 ""colorscheme molokai
-colorscheme nolokai
+""colorscheme nolokai
 ""colorscheme ir_black
 ""colorscheme badwolf
 
