@@ -5,8 +5,8 @@ set t_Co=256
 
 set background=dark
 "colorscheme monokai
-colorscheme solarized
-"colorscheme molokai
+""colorscheme solarized
+colorscheme molokai
 ""colorscheme nolokai
 ""colorscheme ir_black
 ""colorscheme badwolf
