@@ -12,13 +12,26 @@ options     head
       ${2:TARGET}
     end
 
+snippet     mos
+abbr        module signature
+options     head
+    module ${1} : sig
+      ${2:TARGET}
+    end
+
 snippet     cc
 abbr        comment
-    (* ${1:TARGET} *)
+    (* ${0:TARGET} *)
+
+snippet     Cc
+abbr        multi line comment
+    (*
+       ${0:TARGET}
+    *)
 
 snippet     oo
 abbr        ocamldoc comment (** .. *)
-    (** ${1:TARGET} *)
+    (** ${0:TARGET} *)
 
 snippet     if
 abbr        if..then..else
@@ -28,8 +41,7 @@ abbr        if..then..else
 
 snippet     let
 abbr        let..in
-    let ${1:TARGET}
-    in ${0}
+    let ${1:TARGET} in ${0}
 
 snippet     letr
 abbr        let rec .. in
@@ -39,7 +51,7 @@ options     head
 
 snippet     match
 abbr        match
-    match ${1:TARGET} in
+    match ${1:TARGET} with
     | ${2} -> ${0}
 
 snippet     obj
@@ -50,7 +62,7 @@ abbr        object
 
 snippet     try
 abbr        try..with
-    try #{1:TARGET}
+    try ${1:TARGET}
     with ${0}
 
 snippet     lopen
@@ -75,8 +87,31 @@ options     head
 
 snippet     fun
 abbr        (fun x -> ...)
-    (fun ${1:x} -> ${2:x})
+    (fun ${1:x} -> ${2:TARGET})
 
 snippet     arl
 abbr        array literal [| |]
     [| ${0:TARGET} |]
+
+snippet     fail
+abbr        failwith "..."
+    failwith "${0:TARGET}"
+
+snippet     beg
+abbr        begin ... end
+    begin ${0:TARGET} end
+
+snippet     exn
+abbr        exception
+options     head
+    exception ${0:TARGET} of ${1:string}
+
+snippet     lit
+abbr        string literals {xxx| ... |xxx}
+options     head
+    {${0:}|${1:TARGET}|$0}
+
+snippet     @@
+abbr        [@@deriving ...]
+options     head
+    [@@deriving ${0:TARGET}]

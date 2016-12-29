@@ -5,7 +5,7 @@
 <br/>
 
 - - -
-![demo](http://i.imgur.com/DzfjEh4.gif)
+![demo](http://i.imgur.com/cXDCwdE.gif)
 - - -
 
 ## Features of the _wordy_ plugin
@@ -16,6 +16,7 @@
 * Buffer-scoped configuration (leaves your global settings alone)
 * Unicode-friendly, including support for ‘typographic quotes’
 * User-configurable ring of dictionaries
+* *NEW* adjectives and adverbs, to help you detect overuse
 
 ## What is _wordy_?
 
@@ -51,8 +52,13 @@ _wordy_ may require a recent version of Vim.
 
 ## Installation
 
-Best installed using Pathogen, Vundle, Neobundle, or your favorite Vim
-package manager.
+_wordy_ is best installed using a Vim package manager, such as
+[Vundle][vnd], [Plug][plg], [NeoBundle][nbn], or [Pathogen][pth].
+
+[vnd]: https://github.com/gmarik/Vundle.vim
+[plg]: https://github.com/junegunn/vim-plug
+[nbn]: https://github.com/Shougo/neobundle.vim
+[pth]: https://github.com/tpope/vim-pathogen
 
 ## Configuration
 
@@ -81,7 +87,7 @@ least until _wordy_ feels the urge to build again.
 Define your own ring of dictionaries, overriding the default one in your
 `.vimrc`:
 
-```
+```vim
 let g:wordy#ring = [
   \ 'weak',
   \ ['being', 'passive-voice', ],
@@ -92,12 +98,14 @@ let g:wordy#ring = [
   \ ['colloquial', 'idiomatic', 'similies', ],
   \ 'art-jargon',
   \ ['contractions', 'opinion', 'vague-time', 'said-synonyms', ],
+  \ 'adjectives',
+  \ 'adverbs',
   \ ]
 ```
 
 You can navigate the ring with the following commands:
 
-```
+```vim
 :NextWordy
 :PrevWordy
 ```
@@ -105,15 +113,24 @@ You can navigate the ring with the following commands:
 Optionally map a key in your `.vimrc` to rapidly cycle through the
 ring's dictionaries:
 
-```
-nnoremap <silent> K :NextWordy<cr>
+```vim
+noremap <silent> <F8> :<C-u>NextWordy<cr>
+xnoremap <silent> <F8> :<C-u>NextWordy<cr>
+inoremap <silent> <F8> <C-o>:NextWordy<cr>
 ```
 
-**NEW** - You can browse through a flattened list of dictionaries
+You can browse through a flattened list of dictionaries
 specified in your ring with:
 
-```
+```vim
 :Wordy <tab>
+```
+
+and optionally map a key such as `\w` in your `.vimrc` to it by
+
+```vim
+if !&wildcharm | set wildcharm=<C-z> | endif
+execute 'nnoremap <leader>w :Wordy<space>'.nr2char(&wildcharm)
 ```
 
 ## Using _wordy_
@@ -121,7 +138,7 @@ specified in your ring with:
 You’ll use the commands that follow to enable _wordy_. To disable it and
 restore your previous spell environment, enter the command:
 
-```
+```vim
 :NoWordy
 ```
 
@@ -133,7 +150,7 @@ go to those words flagged by _wordy_.
 
 ### Weak and lazy usage
 
-```
+```vim
 :Wordy weak
 ```
 
@@ -143,13 +160,13 @@ We sabotage our writing though weak language, kicking the legs out from
 beneath our verbs and tearing at the foundations of our nouns, watering
 down the very points that we are trying to drive home.
 
-* “I _got_ up and _went_ to work.” (weak)
-* “I awoke and walked to work.” (better)
+* “I _got_ up at precisely 8 AM.” (weak)
+* “I woke up at precisely 8 AM.” (better)
 
 We diminish the weight of our ideas by adding modifiers and fillers.
 
-* “The regiment _that_ took the hill was _perhaps_ a hundred strong.” (weak)
-* “Despite heavy losses, the regiment took the hill.” (better)
+* “That night was _perhaps_ the most important moment of my life, and I don't _think_ I'll ever forget it.” (weak)
+* “That night was the most important moment of my life, and I'll never forget it.” (better)
 
 Words can also be weakened through overuse.
 
@@ -161,7 +178,7 @@ asking whether it detracts from the point you are trying to make.
 
 ### Redundant and problematic usage
 
-```
+```vim
 :Wordy redundant
 :Wordy problematic
 ```
@@ -186,7 +203,7 @@ targeted by _problematic_.
 > _self-actualization_ reflect his _dynamic_ and _transformative_
 > personality.” (puffery and jargon)
 
-```
+```vim
 :Wordy puffery
 :Wordy business-jargon
 :Wordy art-jargon
@@ -200,7 +217,7 @@ Instead of puffery, demonstrate through details.
 
 ### Manipulative language
 
-```
+```vim
 :Wordy weasel
 ```
 
@@ -217,7 +234,7 @@ will seek to purge such loaded language from your writing.
 
 ### To be and the passive voice
 
-```
+```vim
 :Wordy being
 :Wordy passive-voice
 ```
@@ -227,7 +244,7 @@ of the verb to be, often found in overly-passive sentences.
 
 ### Colloquialisms, Idioms, and Similies
 
-```
+```vim
 :Wordy colloquial
 :Wordy idiomatic
 :Wordy similies
@@ -236,9 +253,18 @@ of the verb to be, often found in overly-passive sentences.
 Dictionaries for uncovering the tired cliché, including colloquial and
 idiomatic phrases scraped from Wiktionary and Wikipedia.
 
+### Adjectives and Adverbs
+
+```vim
+:Wordy adjectives
+:Wordy adverbs
+```
+
+Dictionaries to help you detect the overuse of modifiers.
+
 ### Miscellaneous
 
-```
+```vim
 :Wordy said-synonyms
 :Wordy opinion
 :Wordy contractions
@@ -259,8 +285,10 @@ time where you could be more specific.
 
 ## See also
 
-[Words To Avoid in Creative Writing][wa] - a brief guide to usage by writer Cary Morton
+* [danielbmarques/vim-ditto][vd] - new plugin to highlight repeated words
+* [Words To Avoid in Creative Writing][wa] - a brief guide to usage by writer Cary Morton
 
+[vd]: https://github.com/danielbmarques/vim-ditto
 [wa]: http://darlingmionette.deviantart.com/art/Words-To-Avoid-152886782
 
 If you find this plugin useful, you may want to check out these others by

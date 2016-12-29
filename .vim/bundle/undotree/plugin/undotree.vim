@@ -81,7 +81,11 @@ endif
 
 " undotree window width
 if !exists('g:undotree_SplitWidth')
-    let g:undotree_SplitWidth = 30
+    if exists('g:undotree_ShortIndicators')
+        let g:undotree_SplitWidth = 24
+    else
+        let g:undotree_SplitWidth = 30
+    endif
 endif
 
 " diff window height
@@ -134,11 +138,42 @@ if exists('g:undotree_SplitLocation')
                 \ please use g:undotree_WindowLayout instead."
 endif
 
+" Short time indicators
+if exists('g:undotree_ShortIndicators')
+    let s:timeSecond  = '1 s'
+    let s:timeSeconds = ' s'
+
+    let s:timeMinute  = '1 m'
+    let s:timeMinutes = ' m'
+
+    let s:timeHour  = '1 h'
+    let s:timeHours = ' h'
+
+    let s:timeDay  = '1 d'
+    let s:timeDays = ' d'
+
+    let s:timeOriginal = 'Orig'
+else
+    let s:timeSecond = '1 second ago'
+    let s:timeSeconds = ' seconds ago'
+
+    let s:timeMinute  = '1 minute ago'
+    let s:timeMinutes = ' minutes ago'
+
+    let s:timeHour  = '1 hour ago'
+    let s:timeHours = ' hours ago'
+
+    let s:timeDay  = '1 day ago'
+    let s:timeDays = ' days ago'
+
+    let s:timeOriginal = 'Original'
+endif
+
 "Custom key mappings: add this function to your vimrc.
 "You can define whatever mapping as you like, this is a hook function which
 "will be called after undotree window initialized.
 "
-"function g:undotree_CustomMap()
+"function g:Undotree_CustomMap()
 "    map <buffer> <c-n> J
 "    map <buffer> <c-p> K
 "endfunction
@@ -163,10 +198,10 @@ let s:keymap += [['FocusTarget','<tab>','Set Focus to editor']]
 let s:keymap += [['ClearHistory','C','Clear undo history']]
 let s:keymap += [['TimestampToggle','T','Toggle relative timestamp']]
 let s:keymap += [['DiffToggle','D','Toggle diff panel']]
-let s:keymap += [['GoNext','K','Revert to next state']]
-let s:keymap += [['GoPrevious','J','Revert to previous state']]
-let s:keymap += [['GoNextSaved','<','Revert to next saved state']]
-let s:keymap += [['GoPreviousSaved','>','Revert to previous saved state']]
+let s:keymap += [['GoNextState','K','Revert to next state']]
+let s:keymap += [['GoPreviousState','J','Revert to previous state']]
+let s:keymap += [['GoNextSaved','>','Revert to next saved state']]
+let s:keymap += [['GoPreviousSaved','<','Revert to previous saved state']]
 let s:keymap += [['Redo','<c-r>','Redo']]
 let s:keymap += [['Undo','u','Undo']]
 let s:keymap += [['Enter','<2-LeftMouse>','Revert to current']]
@@ -181,7 +216,7 @@ endfunction
 " Get formatted time
 function! s:gettime(time)
     if a:time == 0
-        return "Original"
+        return s:timeOriginal
     endif
     if !g:undotree_RelativeTimestamp
         let today = substitute(strftime("%c",localtime())," .*$",'','g')
@@ -197,26 +232,26 @@ function! s:gettime(time)
         endif
         if sec < 60
             if sec == 1
-                return '1 second ago'
+                return s:timeSecond
             else
-                return sec.' seconds ago'
+                return sec.s:timeSeconds
             endif
         endif
         if sec < 3600
             if (sec/60) == 1
-                return '1 minute ago'
+                return s:timeMinute
             else
-                return (sec/60).' minutes ago'
+                return (sec/60).s:timeMinutes
             endif
         endif
         if sec < 86400 "3600*24
             if (sec/3600) == 1
-                return '1 hour ago'
+                return s:timeHour
             else
-                return (sec/3600).' hours ago'
+                return (sec/3600).s:timeHours
             endif
         endif
-        return (sec/86400).' days ago'
+        return (sec/86400).s:timeDays
     endif
 endfunction
 
@@ -229,7 +264,7 @@ endfunction
 function! s:exec_silent(cmd)
     call s:log("s:exec_silent() ".a:cmd)
     let ei_bak= &eventignore
-    set eventignore=all
+    set eventignore=BufEnter,BufLeave,BufWinLeave,InsertLeave,CursorMoved,BufWritePost
     silent exe a:cmd
     let &eventignore = ei_bak
 endfunction
@@ -350,8 +385,16 @@ function! s:undotree.Init()
 endfunction
 
 function! s:undotree.BindKey()
+    if v:version > 703 || (v:version == 703 && has("patch1261"))
+        let map_options = ' <nowait> '
+    else
+        let map_options = ''
+    endif
+    let map_options = map_options.' <silent> <buffer> '
     for i in s:keymap
-        silent exec 'nnoremap <silent> <script> <buffer> '.i[1].' :call <sid>undotreeAction("'.i[0].'")<cr>'
+        silent exec 'nmap '.map_options.i[1].' <plug>Undotree'.i[0]
+        silent exec 'nnoremap '.map_options.'<plug>Undotree'.i[0]
+            \ .' :call <sid>undotreeAction("'.i[0].'")<cr>'
     endfor
     if exists('*g:Undotree_CustomMap')
         call g:Undotree_CustomMap()
@@ -389,7 +432,7 @@ function! s:undotree.ActionInTarget(cmd)
         return
     endif
     " Target should be a normal buffer.
-    if (&bt == '') && (&modifiable == 1) && (mode() == 'n')
+    if (&bt == '' || &bt == 'acwrite') && (&modifiable == 1) && (mode() == 'n')
         call s:exec(a:cmd)
         call self.Update()
     endif
@@ -431,11 +474,11 @@ function! s:undotree.ActionRedo()
     call self.ActionInTarget("redo")
 endfunction
 
-function! s:undotree.ActionGoPrevious()
+function! s:undotree.ActionGoPreviousState()
     call self.ActionInTarget('earlier')
 endfunction
 
-function! s:undotree.ActionGoNext()
+function! s:undotree.ActionGoNextState()
     call self.ActionInTarget('later')
 endfunction
 
@@ -560,6 +603,7 @@ function! s:undotree.Show()
     setlocal nobuflisted
     setlocal nospell
     setlocal nonumber
+    setlocal norelativenumber
     setlocal cursorline
     setlocal nomodifiable
     setlocal statusline=%!t:undotree.GetStatusLine()
@@ -593,7 +637,12 @@ function! s:undotree.Update()
     if bufname == self.bufname || bufname == t:diffpanel.bufname
         return
     endif
-    if (&bt != '') || (&modifiable == 0) || (mode() != 'n')
+    if (&bt != '' && &bt != 'acwrite') || (&modifiable == 0) || (mode() != 'n')
+        if &bt == 'quickfix' || &bt == 'nofile'
+            "Do nothing for quickfix and q:
+            call s:log("undotree.Update() ignore quickfix")
+            return
+        endif
         if self.targetBufnr == bufnr('%') && self.targetid == w:undotree_id
             call s:log("undotree.Update() invalid buffer NOupdate")
             return
@@ -1210,6 +1259,7 @@ function! s:diffpanel.Show()
     setlocal nobuflisted
     setlocal nospell
     setlocal nonumber
+    setlocal norelativenumber
     setlocal nocursorline
     setlocal nomodifiable
     setlocal statusline=%!t:diffpanel.GetStatusLine()

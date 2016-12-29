@@ -1,82 +1,52 @@
 ctrlp-funky
 ============
-Very simple function navigator for ctrlp.vim.
+A super simple function navigator for ctrlp.vim.  
+For lazy people who cannot wait until ctags finishes.
 
 SYNOPSIS
 ----------
-This is a ctrlp.vim extension. It simply navigates and jumps to function definitions from the current file without ctags. It just searches function definitions or equivalent lines using regular expressions, therefore some languages' abstraction aren't accurate because of hard to parse.
+This is a ctrlp.vim extension. It simply navigates and jumps to function definitions from the current file without ctags. It just searches for function definitions or equivalent lines using regular expressions, therefore some languages' abstractions aren't accurate because of them being hard to parse.
 
-One of advantages of this plugin is you needn't to generate tags file to jump to definition of functions, classes etc.
+One of advantages of this plugin is that no configuration is required in most cases, so it starts working right after installation with no ctags required.
+*If you want to have a more accurate list of function defs, you should use other ctags-based tools, etc.*
 
 ![ctrlp-funky][1]
 
-Currently, following filetypes are supported:
-* c/cpp (C/C++)
-* chef
-* cmm (TRACE32)
-* coffee-script
-* elixir
-* go
-* html/xhtml
-* java
-* javascript
-* jinja (template engine for Python)
-* lua
-* make (Makefile)
-* markdown
-* nerdtree
-* objc (Objective-C)
-* perl
-* php
-* python
-* ruby
-* scala
-* sh (bash, dash and zsh)
-* typescript
-* yaml
-* vb (Visual Basic)
-* vim
+### Supported filetypes:
+See [ctrlp-funky.txt](https://github.com/tacahiroy/ctrlp-funky/blob/master/doc/ctrlp-funky.txt#L22)
 
 
 PREMISE
 ----------
 First of all, I believe you're a user of a great Vim plugin called [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim).
-Otherwise, you need to install ctrlp.vim before start using this plugin.
+Otherwise, you need to install ctrlp.vim before you start using this plugin.
 
 
 INSTALLATION
 ----------
-### [Vundle](https://github.com/gmarik/vundle.git)
-```vim
-:PluginInstall tacahiroy/ctrlp-funky
-```
+### Vundle
+`Plugin 'tacahiroy/ctrlp-funky'`
 
-In addition, don't forget put a line below into your _.vimrc_.
-```vim
-Plugin 'tacahiroy/ctrlp-funky'
-```
+### NeoBundle
+`NeoBundle 'tacahiroy/ctrlp-funky'`
 
-### [pathogen.vim](https://github.com/tpope/vim-pathogen)
-```sh
-$ cd ~/.vim/bundle
-$ git clone git://github.com/tacahiroy/ctrlp-funky.git
+### vim-plug
+`Plug 'tacahiroy/ctrlp-funky'`
+
+### pathogen.vim
+```
+% cd ~/.vim/bundle
+% git clone https://github.com/tacahiroy/ctrlp-funky.git
 ```
 
 ### Manually
-If you don't use either plugin management systems, copy _autoload_ and _plugin_ directories to your _.vim_ directory.
+If you use neither of the plugin management systems, copy _autoload_ and _plugin_ directories to _.vim_ directory.
 On Windows, basically, _vimfiles_ directory is used instead of _.vim_ directory.
 
 
 CONFIGURATION
 --------------
-You need to make the plugin available as a ctrlp.vim extension. Please add *funky* to a variable `g:ctrlp_extensions`.
-```vim
-let g:ctrlp_extensions = ['funky']
-```
-
-Reboot Vim and then you can use `:CtrlPFunky` command.
-
-It might be useful key mappings like:
+It should be useful to define key mappings like this:
 ```vim
 nnoremap <Leader>fu :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
@@ -98,7 +68,7 @@ See `:h g:ctrlp_funky_matchtype` for more details and notes.
 
 ### SYNTAX HIGHLIGHTING
 I'd like to introduce one of ctrlp-funky options.
-Do you want to make ctrlp-funky funkier? Okay - you can do it just 1 line config.
+Do you want to make ctrlp-funky funkier? Okay - you can do it with just 1 line of config:
 ```vim
 let g:ctrlp_funky_syntax_highlight = 1
 ```
@@ -120,7 +90,7 @@ LINK
 LICENSE
 -------
 
-Copyright (C) 2012-2014 Takahiro Yoshihara. Distributed under the MIT License.
+Copyright (C) 2012-2016 Takahiro Yoshihara. Distributed under the MIT License.
 
 [1]: http://i.imgur.com/yO4PWAF.png
 [2]: http://i.imgur.com/CnKui5H.png

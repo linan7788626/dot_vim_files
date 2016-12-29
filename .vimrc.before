@@ -52,7 +52,7 @@
     "   let g:spf13_keep_trailing_whitespace = 1
 
     " Enable powerline symbols
-       let g:airline_powerline_fonts = 1
+    "   let g:airline_powerline_fonts = 1
 
     " vim files directory
     "   let g:spf13_consolidated_directory = <full path to desired directory>
@@ -94,14 +94,14 @@
 
 " }
 
-" Use fork before if available {
-    if filereadable(expand("~/.vimrc.before.fork"))
-        source ~/.vimrc.before.fork
-    endif
-" }
+"" Use fork before if available {
+    "if filereadable(expand("~/.vimrc.before.fork"))
+        "source ~/.vimrc.before.fork
+    "endif
+"" }
 
-" Use local before if available {
-    if filereadable(expand("~/.vimrc.before.local"))
-        source ~/.vimrc.before.local
-    endif
-" }
+"" Use local before if available {
+    "if filereadable(expand("~/.vimrc.before.local"))
+        "source ~/.vimrc.before.local
+    "endif
+"" }

@@ -4,6 +4,10 @@ abbr        match {\n  case .. => ..
 		case ${1} => ${0}
 	}
 
+snippet     case
+abbr        case .. => ..
+	case ${1} => ${0}
+
 snippet     try
 abbr        try {} catch { case ... }
 options     head
@@ -13,6 +17,16 @@ options     head
 		case e${2:: Exception} => ${0}
 	}
 
+snippet     for
+	for {
+		${1}
+	} yield ${2}
+
+snippet     if
+	if (${1}) {
+		${2}
+	}${3: else}
+
 snippet     p
 abbr        println()
 	println(${1})
@@ -21,17 +35,23 @@ snippet     pn
 abbr        println('name, name)
 	println('${1:#:name}, $1)
 
+snippet     pf
+abbr        p in for
+	_ = println(${1})
+
 snippet     main
 abbr        def main(args: Array[String]) {
 options     head
-	def main(args: Array[String]) {
-		${0:TARGET}
+	object ${1:`expand('%:t:r') ==# '' ? 'HelloWorld' : expand('%:t:r')`} {
+		def main(args: Array[String]) {
+			${0:TARGET}
+		}
 	}
 
 snippet     hello
 abbr        object HelloWorld { def main(...) }
 options     head
-	object HelloWorld {
+	object ${1:`expand('%:t:r') ==# '' ? 'HelloWorld' : expand('%:t:r')`} {
 		def main(args: Array[String]) {
 			println("Hello, world!")
 		}
@@ -43,12 +63,16 @@ options     head
 		${0:TARGET}
 	}
 
+snippet     class
+options     head
+	class ${1:X()} {
+		${0:TARGET}
+	}
+
 snippet     should-scalatest
 options     word
-	should {
-		"${1}" in {
-			${0:TARGET}
-		}
+	should "${1}" in {
+		${0:TARGET}
 	}
 
 snippet     akka-actor
@@ -68,7 +92,12 @@ options     head
 
 snippet     package
 options     head
-	package `substitute(substitute(expand('%:h'), '^src/main/scala/', '', ''), '/', '.', 'g')`
+	package `substitute(substitute(expand('%:h'), '.*\<src/\(main\|test\)/scala/', '', ''), '/', '.', 'g')`
+
+snippet     cclass
+options     head
+abbr        case class ..(..: ..)
+	case class ${1}(${2}: ${0})
 
 # scala's indent plugin doesn't work well. use hard-tab for this snippet.
 # vim: set noexpandtab :

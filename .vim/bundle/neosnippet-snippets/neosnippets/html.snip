@@ -13,6 +13,18 @@ snippet doctypestrict
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
+snippet html5
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=${1:utf-8}">
+            <title>${2}</title>
+        </head>
+        <body>
+            ${3}
+        </body>
+    </html>
+
 snippet head
     <head>
         <meta http-equiv="content-type" content="text/html; charset=${1:utf-8}">
@@ -237,14 +249,15 @@ options word
 
 snippet label
 options word
-    <label>${1}: <input type="${2:TARGET}" /><label>${3}
+    <label>${1}: <input type="${2:TARGET}" /></label>${3}
+
 snippet labelfor
 options word
     <label for="${1}:id">${2:TARGET}</label>${3}
 
-snippet fiedset
+snippet fieldset
 options word
-    <fiedlset>${1:TARGET}</fiedset>${2}
+    <fieldset>${1:TARGET}</fieldset>${2}
 
 snippet legend
 options word

@@ -33,17 +33,15 @@ let s:source = {
       \     g:neocomplcache_auto_completion_start_length,
       \}
 
-function! s:source.initialize() "{{{
+function! s:source.initialize() abort "{{{
   " Initialize.
   call neocomplcache#set_dictionary_helper(
         \ g:neocomplcache_source_rank, 'snippets_complete', 8)
   call neocomplcache#set_completion_length('snippets_complete',
         \ g:neocomplcache_auto_completion_start_length)
-  call neosnippet#util#set_default(
-        \ 'g:neosnippet#enable_preview', 0)
 endfunction"}}}
 
-function! s:source.get_keyword_pos(cur_text) "{{{
+function! s:source.get_keyword_pos(cur_text) abort "{{{
   let cur_word = matchstr(a:cur_text, '\w\+$')
   let word_candidates = neocomplcache#keyword_filter(
         \ filter(values(neosnippet#helpers#get_snippets()),
@@ -55,7 +53,7 @@ function! s:source.get_keyword_pos(cur_text) "{{{
   return match(a:cur_text, '\S\+$')
 endfunction"}}}
 
-function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
+function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) abort "{{{
   let list = s:keyword_filter(neosnippet#helpers#get_snippets(), a:cur_keyword_str)
 
   for snippet in list
@@ -63,15 +61,12 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str) "{{{
 
     let snippet.menu = neosnippet#util#strwidthpart(
           \ snippet.menu_template, winwidth(0)/3)
-    if g:neosnippet#enable_preview
-      let snippet.info = snippet.snip
-    endif
   endfor
 
   return list
 endfunction"}}}
 
-function! s:keyword_filter(snippets, cur_keyword_str) "{{{
+function! s:keyword_filter(snippets, cur_keyword_str) abort "{{{
   " Uniq by real_name.
   let dict = {}
 
@@ -94,7 +89,7 @@ function! s:keyword_filter(snippets, cur_keyword_str) "{{{
   return values(dict)
 endfunction"}}}
 
-function! neocomplcache#sources#snippets_complete#define() "{{{
+function! neocomplcache#sources#snippets_complete#define() abort "{{{
   return s:source
 endfunction"}}}
 

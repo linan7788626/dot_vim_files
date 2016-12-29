@@ -1,3 +1,11 @@
+snippet #!
+abbr    #!/bin/sh
+alias   shebang
+options head
+	#!/bin/${1:sh}
+	${0}
+
+
 snippet if
 	if [ ${1:#:condition} ]; then
 		${0:TARGET}
@@ -32,20 +40,21 @@ snippet until
 	done
 
 
-snippet here
-alias   h
-	<<${1}
-		${0:TARGET}
+snippet heredoc
+alias   h <<
+	<< ${1:EOF}
+		${0:#:TARGET}
+	$1
 
 snippet env
 	#!/usr/bin/env ${1}
 
 
 snippet tmp
-	${1:TMPFILE}="mktemp -t ${2:untitled}"
-	trap "rm -f '$${1}'" 0               # EXIT
-	trap "rm -f '$${1}'; exit 1" 2       # INT
-	trap "rm -f '$${1}'; exit 1" 1 15    # HUP TERM
+	${1:TMPFILE}=$(mktemp ${2:XXX})
+	trap "rm -f '${$1}'" 0               # EXIT
+	trap "rm -f '${$1}'; exit 1" 2       # INT
+	trap "rm -f '${$1}'; exit 1" 1 15    # HUP TERM
 	${0}
 
 snippet function

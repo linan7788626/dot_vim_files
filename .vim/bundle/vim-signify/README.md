@@ -1,33 +1,17 @@
-vim-signify
------------
+![vim-signify](https://raw.githubusercontent.com/mhinz/vim-signify/master/pictures/signify-logo.png)
 
-![Example:signify in action](https://github.com/mhinz/vim-signify/raw/master/signify.gif)
-
-by Marco Hinz
-
-Twitter: https://twitter.com/_mhinz_  
-IRC: __mhi^__ (Freenode)
-
-If you use any of my plugins, please star them on github. It's a great way of
-getting feedback and gives me the kick to put more time into their development.
-If you encounter any bugs or have feature requests, just open an issue report on
-Github.
-
-Intro
------
+---
 
 Signify (or just Sy) is a quite unobtrusive plugin. It uses signs to indicate
-added, modified and removed lines based on data of an underlying version
-control system.
+added, modified and removed lines based on data of an underlying version control
+system.
 
 It's __fast__, __easy to use__ and __well documented__.
 
 ---
 
-Features:
-
 - supports git, mercurial, darcs, bazaar, subversion, cvs, rcs, fossil, accurev,
-  perforce
+  perforce, tfs
 - quick jumping between blocks of changed lines ("hunks")
 - apart from signs there is also optional line highlighting
 - preserves signs from other plugins
@@ -38,34 +22,38 @@ Features:
   demand later
 - fully configurable through global variables (options and mappings)
 
-What about vim-gitgutter?
--------------------------
+---
 
-Sy provides a superset of gitgutter.
+_If git is the only version control system you use, I suggest having a look at
+[vim-gitgutter](https://github.com/airblade/vim-gitgutter). It provides more
+git-specific features that would be unfeasible for Sy, since it only implements
+features that work for all supported VCS._
 
-So here is the short answer: The main difference in Sy is its support for version
-control systems other than git. Moreover, two of its design goals are speed and
-ease of use.
+## Installation and Documentation
 
-Installation & Documentation
-----------------------------
+Use your favorite [plugin
+manager](https://github.com/mhinz/vim-galore#managing-plugins), e.g. using
+[vim-plug](https://github.com/junegunn/vim-plug):
 
-If you have no preferred installation method, I suggest using tpope's
-[pathogen](https://github.com/tpope/vim-pathogen). Afterwards installing
-vim-signify is as easy as pie:
-
-    $ git clone https://github.com/mhinz/vim-signify ~/.vim/bundle/vim-signify
+    Plug 'mhinz/vim-signify'
 
 It works without any configuration, but you might want to look into the
 documentation for further customization:
 
-    :Helptags  " rebuilding tags files
     :h signify
 
-_NOTE_: The single most important option by far is `g:signify_vcs_list`. Please
-read `:h signify-option-vcs_list`.
+_The single most important option by far is `g:signify_vcs_list`. Please read
+`:h g:signify_vcs_list`._
 
-License
--------
+## Demo
 
-MIT license. Copyright (c) 2013 Marco Hinz.
+![Example:signify in action](https://raw.githubusercontent.com/mhinz/vim-signify/master/pictures/signify-demo.gif)
+
+## Author and Feedback
+
+If you like this plugin, star it! It's a great way of getting feedback. The same
+goes for reporting issues or feature requests.
+
+Contact: [Twitter](https://twitter.com/_mhinz_)
+
+Co-maintainer: [@jamessan](https://github.com/jamessan)

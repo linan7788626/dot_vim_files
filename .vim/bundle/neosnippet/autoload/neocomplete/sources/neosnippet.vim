@@ -29,6 +29,7 @@ set cpo&vim
 let s:source = {
       \ 'name' : 'neosnippet',
       \ 'kind' : 'keyword',
+      \ 'mark' : '[nsnip]',
       \ 'rank' : 8,
       \ 'hooks' : {},
       \ 'matchers' :
@@ -36,14 +37,8 @@ let s:source = {
       \          ['matcher_fuzzy'] : ['matcher_head']),
       \}
 
-function! s:source.hooks.on_init(context) "{{{
-  " Initialize.
-  call neosnippet#util#set_default(
-        \ 'g:neosnippet#enable_preview', 0)
-endfunction"}}}
-
-function! s:source.gather_candidates(context) "{{{
-  let snippets = values(neosnippet#helpers#get_snippets())
+function! s:source.gather_candidates(context) abort "{{{
+  let snippets = values(neosnippet#helpers#get_completion_snippets())
   if matchstr(a:context.input, '\S\+$') !=#
         \ matchstr(a:context.input, '\w\+$')
     " Word filtering
@@ -52,20 +47,17 @@ function! s:source.gather_candidates(context) "{{{
   return snippets
 endfunction"}}}
 
-function! s:source.hooks.on_post_filter(context) "{{{
+function! s:source.hooks.on_post_filter(context) abort "{{{
   for snippet in a:context.candidates
     let snippet.dup = 1
     let snippet.menu = neosnippet#util#strwidthpart(
           \ snippet.menu_template, winwidth(0)/3)
-    if g:neosnippet#enable_preview
-      let snippet.info = snippet.snip
-    endif
   endfor
 
   return a:context.candidates
 endfunction"}}}
 
-function! neocomplete#sources#neosnippet#define() "{{{
+function! neocomplete#sources#neosnippet#define() abort "{{{
   return s:source
 endfunction"}}}
 

@@ -1,6 +1,6 @@
 " Language:   TOML
 " Maintainer: Caleb Spare <cespare@gmail.com>
-" URL:        http://github.com/cespare/vim-toml
+" URL:        https://github.com/cespare/vim-toml
 " LICENSE:    MIT
 
 if exists("b:current_syntax")
@@ -25,16 +25,18 @@ syn region tomlString oneline start=/'/ end=/'/
 syn region tomlString start=/'''/ end=/'''/
 hi def link tomlString String
 
-syn match tomlInteger /\<-\?\d\+\>/ display
+syn match tomlInteger /\<[+-]\=[0-9]\(_\=\d\)*\>/ display
 hi def link tomlInteger Number
 
-syn match tomlFloat /\<-\?\d\+\.\d\+\>/ display
+syn match tomlFloat /\<[+-]\=[0-9]\(_\=\d\)*\.\d\+\>/ display
+syn match tomlFloat /\<[+-]\=[0-9]\(_\=\d\)*\(\.[0-9]\(_\=\d\)*\)\=[eE][+-]\=[0-9]\(_\=\d\)*\>/ display
 hi def link tomlFloat Float
 
 syn match tomlBoolean /\<\%(true\|false\)\>/ display
 hi def link tomlBoolean Boolean
 
-syn match tomlDate /\d\{4\}-\d\{2\}-\d\{2\}T\d\{2\}:\d\{2\}:\d\{2\}Z/ display
+" https://tools.ietf.org/html/rfc3339
+syn match tomlDate /\d\{4\}-\d\{2\}-\d\{2\}T\d\{2\}:\d\{2\}:\d\{2\}\%(\.\d\+\)\?\%(Z\|[+-]\d\{2\}:\d\{2\}\)/ display
 hi def link tomlDate Constant
 
 syn match tomlTable /^\s*\[[^#\[\]]\+\]\s*\(#.*\)\?$/ contains=tomlComment

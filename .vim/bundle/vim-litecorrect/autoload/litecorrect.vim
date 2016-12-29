@@ -80,6 +80,7 @@ function! litecorrect#init(...)
   ia <buffer> dont don't
   ia <buffer> eahc each
   ia <buffer> efel feel
+  ia <buffer> ehlp help
   ia <buffer> ehr her
   ia <buffer> emial email
   ia <buffer> ened need
@@ -110,14 +111,18 @@ function! litecorrect#init(...)
   ia <buffer> gruop group
   ia <buffer> grwo grow
   ia <buffer> haev have
+  ia <buffer> hasa has a
+  ia <buffer> havea have a
   ia <buffer> hda had
   ia <buffer> hge he
   ia <buffer> hlep help
   ia <buffer> holf hold
   ia <buffer> hsa has
   ia <buffer> hsi his
+  ia <buffer> htan than
   ia <buffer> htat that
   ia <buffer> hte the
+  ia <buffer> htem them
   ia <buffer> hten then
   ia <buffer> htere there
   ia <buffer> htese these
@@ -129,9 +134,11 @@ function! litecorrect#init(...)
   ia <buffer> hvaing having
   ia <buffer> hvea have
   ia <buffer> hwich which
+  ia <buffer> hwo how
   ia <buffer> idae idea
   ia <buffer> idaes ideas
   ia <buffer> ihs his
+  ia <buffer> ina in a
   ia <buffer> inot into
   ia <buffer> inteh in the
   ia <buffer> inthe in the
@@ -165,6 +172,7 @@ function! litecorrect#init(...)
   ia <buffer> lsat last
   ia <buffer> lveo love
   ia <buffer> lvoe love
+  ia <buffer> mcuh much
   ia <buffer> mear mere
   ia <buffer> mial mail
   ia <buffer> mkae make
@@ -172,6 +180,9 @@ function! litecorrect#init(...)
   ia <buffer> mkea make
   ia <buffer> moeny money
   ia <buffer> mroe more
+  ia <buffer> msut must
+  ia <buffer> muhc much
+  ia <buffer> muts must
   ia <buffer> mysefl myself
   ia <buffer> myu my
   ia <buffer> nad and
@@ -184,6 +195,7 @@ function! litecorrect#init(...)
   ia <buffer> nwe new
   ia <buffer> nwo now
   ia <buffer> ocur occur
+  ia <buffer> ofa of a
   ia <buffer> ofits of its
   ia <buffer> ofthe of the
   ia <buffer> oging going
@@ -224,7 +236,9 @@ function! litecorrect#init(...)
   ia <buffer> taht that
   ia <buffer> tath that
   ia <buffer> teh the
+  ia <buffer> tehir their
   ia <buffer> tehn then
+  ia <buffer> tehre there
   ia <buffer> tehy they
   ia <buffer> tghe the
   ia <buffer> tghis this
@@ -232,6 +246,7 @@ function! litecorrect#init(...)
   ia <buffer> thast that
   ia <buffer> thats that's
   ia <buffer> thatthe that the
+  ia <buffer> theh then
   ia <buffer> theri their
   ia <buffer> thgat that
   ia <buffer> thge the
@@ -259,10 +274,8 @@ function! litecorrect#init(...)
   ia <buffer> tkaes takes
   ia <buffer> tkaing taking
   ia <buffer> todya today
-  ia <buffer> toke took
   ia <buffer> tothe to the
   ia <buffer> towrad toward
-  ia <buffer> tryed tried
   ia <buffer> tthe the
   ia <buffer> ture true
   ia <buffer> twpo two
@@ -282,7 +295,6 @@ function! litecorrect#init(...)
   ia <buffer> wherre where
   ia <buffer> whic which
   ia <buffer> whihc which
-  ia <buffer> whith with
   ia <buffer> whn when
   ia <buffer> whta what
   ia <buffer> wih with
@@ -312,6 +324,7 @@ function! litecorrect#init(...)
   ia <buffer> yaer year
   ia <buffer> yera year
   ia <buffer> yoiu you
+  ia <buffer> yoru your
   ia <buffer> youare you are
   ia <buffer> youre you're
   ia <buffer> youve you've

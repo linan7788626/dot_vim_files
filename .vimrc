@@ -168,10 +168,10 @@
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
 
-    set cursorline                  " Highlight current line
+    set cursorline  cursorcolumn    " Highlight current line
 
-    highlight clear SignColumn      " SignColumn should match background
-    highlight clear LineNr          " Current line number row will have same background color in relative mode
+    "highlight clear SignColumn      " SignColumn should match background
+    "highlight clear LineNr          " Current line number row will have same background color in relative mode
     "highlight clear CursorLineNr    " Remove highlight color from current line number
 
     if has('cmdline_info')
@@ -511,22 +511,22 @@
         let g:snips_author = 'Steve Francia <steve.francia@gmail.com>'
     " }
 
-    " NerdTree {
-        if isdirectory(expand("~/.vim/bundle/nerdtree"))
-            map <C-e> <plug>NERDTreeTabsToggle<CR>
-            map <leader>e :NERDTreeFind<CR>
-            nmap <leader>nt :NERDTreeFind<CR>
+    "" NerdTree {
+        "if isdirectory(expand("~/.vim/bundle/nerdtree"))
+            "map <C-e> <plug>NERDTreeTabsToggle<CR>
+            "map <leader>e :NERDTreeFind<CR>
+            "nmap <leader>nt :NERDTreeFind<CR>
 
-            let NERDTreeShowBookmarks=1
-            let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
-            let NERDTreeChDirMode=0
-            let NERDTreeQuitOnOpen=1
-            let NERDTreeMouseMode=2
-            let NERDTreeShowHidden=1
-            let NERDTreeKeepTreeInNewTab=1
-            let g:nerdtree_tabs_open_on_gui_startup=0
-        endif
-    " }
+            "let NERDTreeShowBookmarks=1
+            "let NERDTreeIgnore=['\.py[cd]$', '\~$', '\.swo$', '\.swp$', '^\.git$', '^\.hg$', '^\.svn$', '\.bzr$']
+            "let NERDTreeChDirMode=0
+            "let NERDTreeQuitOnOpen=1
+            "let NERDTreeMouseMode=2
+            "let NERDTreeShowHidden=1
+            "let NERDTreeKeepTreeInNewTab=1
+            "let g:nerdtree_tabs_open_on_gui_startup=0
+        "endif
+    "" }
 
     " Tabularize {
         if isdirectory(expand("~/.vim/bundle/tabular"))
@@ -565,6 +565,7 @@
 
     " PyMode {
         " Disable if python support not present
+        "let g:pymode = 0
         if !has('python')
             let g:pymode = 0
         endif
@@ -573,6 +574,8 @@
             let g:pymode_lint_checkers = ['pyflakes']
             let g:pymode_trim_whitespaces = 0
             let g:pymode_options = 0
+            let g:pymode_rope_lookup_project = 0
+            let g:pymode_rope_complete_on_dot = 0
             let g:pymode_rope = 0
         endif
     " }
@@ -996,6 +999,7 @@
 
         " See `:echo g:airline_theme_map` for some more choices
         " Default in terminal vim is 'dark'
+        let g:airline_powerline_fonts = 1
         if isdirectory(expand("~/.vim/bundle/vim-airline/"))
             if !exists('g:airline_theme')
                 let g:airline_theme = 'solarized'

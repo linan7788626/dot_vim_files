@@ -23,13 +23,8 @@ endf
 " Cleanly return after autocompleting an html/xml tag.
 fun s:Return()
 	let tag = s:GetCurrentTag()
-	if(tag != '' && match(getline('.'), '</'.tag.'>') > -1)
-		return pumvisible() ? 
-				\ "\<space>\<bs>\<cr>\<cr>\<up>"
-				\ : "\<cr>\<cr>\<up>"
-	else
-		return "\<cr>"
-	endif
+	return tag != '' && match(getline('.'), '</'.tag.'>') > -1 ?
+				\ "\<cr>\<cr>\<up>" : "\<cr>"
 endf
 
 fun s:InComment()

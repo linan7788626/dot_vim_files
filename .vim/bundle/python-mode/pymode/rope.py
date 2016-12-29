@@ -1,24 +1,23 @@
-""" Rope support in pymode. """
+"""Integration with Rope library."""
+
 from __future__ import absolute_import, print_function
 
-import multiprocessing
 import os.path
 import re
 import site
 import sys
 
-from rope.base import project, libutils, exceptions, change, worder # noqa
+from rope.base import project, libutils, exceptions, change, worder, pycore
 from rope.base.fscommands import FileSystemCommands # noqa
 from rope.base.taskhandle import TaskHandle # noqa
 from rope.contrib import autoimport as rope_autoimport, codeassist, findit, generate # noqa
 from rope.refactor import ModuleToPackage, ImportOrganizer, rename, extract, inline, usefunction, move, change_signature, importutils # noqa
 
-from ._compat import StringIO
 from .environment import env
 
 
 def look_ropeproject(path):
-    """ Search for ropeproject in current and parent dirs.
+    """Search for ropeproject in current and parent dirs.
 
     :return str|None: A finded path
 
@@ -75,7 +74,7 @@ def complete(dot=False):
 
     cline = env.current.line[:col]
     env.debug('dot completion', cline)
-    if FROM_RE.match(cline) or cline.endswith('..') or cline.endswith('\.'):
+    if FROM_RE.match(cline) or cline.endswith('..') or cline.endswith('\.'):  # noqa
         return env.stop("")
 
     proposals = get_proporsals(source, offset, dot=dot)
@@ -107,7 +106,7 @@ def get_proporsals(source, offset, base='', dot=False):
     :return str:
 
     """
-    with RopeContext() as ctx:
+    with RopeContext() as ctx:  # noqa
 
         try:
             proposals = codeassist.code_assist(
@@ -348,12 +347,14 @@ class RopeContext(object):
 
     """ A context manager to have a rope project context. """
 
-    def __init__(self, path, project_path):
+    projects = {}
+    resource = {}
+
+    def __init__(self, path=None, project_path=None):
         """ Init Rope context. """
         self.path = path
 
-        self.project = project.Project(
-            project_path, fscommands=FileSystemCommands())
+        self.project = project.Project(project_path, fscommands=FileSystemCommands())
 
         self.importer = rope_autoimport.AutoImport(
             project=self.project, observe=False)
@@ -409,12 +410,7 @@ class RopeContext(object):
                 importer.generate_modules_cache(modules)
             importer.project.sync()
 
-        sys.stdout, stdout_ = StringIO(), sys.stdout
-        sys.stderr, stderr_ = StringIO(), sys.stderr
-        process = multiprocessing.Process(target=_update_cache, args=(
-            self.importer, modules))
-        process.start()
-        sys.stdout, sys.stderr = stdout_, stderr_
+        _update_cache(self.importer, modules)
 
 
 class ProgressHandler(object):
@@ -467,8 +463,8 @@ class Refactoring(object): # noqa
 
                 action = env.user_input_choices(
                     'Choose what to do:', 'perform', 'preview',
-                        'perform in class hierarchy',
-                        'preview in class hierarchy')
+                    'perform in class hierarchy',
+                    'preview in class hierarchy')
 
                 in_hierarchy = action.endswith("in class hierarchy")
 
@@ -491,7 +487,7 @@ class Refactoring(object): # noqa
             except exceptions.RefactoringError as e:
                 env.error(str(e))
 
-            except Exception as e:
+            except Exception as e: # noqa
                 env.error('Unhandled exception in Pymode: %s' % e)
 
     @staticmethod
@@ -510,14 +506,7 @@ class Refactoring(object): # noqa
 
     @staticmethod
     def get_changes(refactor, input_str, in_hierarchy=False):
-        """ Get changes.
-
-        :return Changes:
-
-        """
-        progress = ProgressHandler('Calculate changes ...')
-        return refactor.get_changes(
-            input_str, task_handle=progress.handle, in_hierarchy = in_hierarchy)
+        return refactor.get_changes(input_str)
 
 
 class RenameRefactoring(Refactoring):
@@ -555,6 +544,15 @@ class RenameRefactoring(Refactoring):
 
         return newname
 
+    @staticmethod
+    def get_changes(refactor, input_str, in_hierarchy=False):
+        """ Get changes.
+
+        :return Changes:
+
+        """
+        return refactor.get_changes(input_str, in_hierarchy=in_hierarchy)
+
 
 class ExtractMethodRefactoring(Refactoring):
 
@@ -578,16 +576,6 @@ class ExtractMethodRefactoring(Refactoring):
         _, offset2 = env.get_offset_params(cursor2)
         return extract.ExtractMethod(
             ctx.project, ctx.resource, offset1, offset2)
-
-    @staticmethod
-    def get_changes(refactor, input_str):
-        """ Get changes.
-
-        :return Changes:
-
-        """
-
-        return refactor.get_changes(input_str)
 
 
 class ExtractVariableRefactoring(Refactoring):
@@ -613,16 +601,6 @@ class ExtractVariableRefactoring(Refactoring):
         return extract.ExtractVariable(
             ctx.project, ctx.resource, offset1, offset2)
 
-    @staticmethod
-    def get_changes(refactor, input_str):
-        """ Get changes.
-
-        :return Changes:
-
-        """
-
-        return refactor.get_changes(input_str)
-
 
 class InlineRefactoring(Refactoring):
 
@@ -639,14 +617,13 @@ class InlineRefactoring(Refactoring):
         return inline.create_inline(ctx.project, ctx.resource, offset)
 
     @staticmethod
-    def get_changes(refactor, input_str):
+    def get_changes(refactor, input_str, in_hierarchy=False):
         """ Get changes.
 
         :return Changes:
 
         """
-        progress = ProgressHandler('Calculate changes ...')
-        return refactor.get_changes(task_handle=progress.handle)
+        return refactor.get_changes()
 
 
 class UseFunctionRefactoring(Refactoring):
@@ -664,15 +641,13 @@ class UseFunctionRefactoring(Refactoring):
         return usefunction.UseFunction(ctx.project, ctx.resource, offset)
 
     @staticmethod
-    def get_changes(refactor, input_str):
+    def get_changes(refactor, input_str, in_hierarchy=False):
         """ Get changes.
 
         :return Changes:
 
         """
-        progress = ProgressHandler('Calculate changes ...')
-        return refactor.get_changes(
-            resources=[refactor.resource], task_handle=progress.handle)
+        return refactor.get_changes()
 
 
 class ModuleToPackageRefactoring(Refactoring):
@@ -689,7 +664,7 @@ class ModuleToPackageRefactoring(Refactoring):
         return ModuleToPackage(ctx.project, ctx.resource)
 
     @staticmethod
-    def get_changes(refactor, input_str):
+    def get_changes(refactor, input_str, in_hierarchy=False):
         """ Get changes.
 
         :return Changes:
@@ -751,13 +726,12 @@ class ChangeSignatureRefactoring(Refactoring):
         return change_signature.ChangeSignature(
             ctx.project, ctx.resource, offset)
 
-    def get_changes(self, refactor, input_string):
+    def get_changes(self, refactor, input_string, in_hierarchy=False):
         """ Function description.
 
         :return Rope.changes:
 
         """
-
         args = re.sub(r'[\s\(\)]+', '', input_string).split(',')
         olds = [arg[0] for arg in refactor.get_args()]
 
@@ -776,7 +750,7 @@ class ChangeSignatureRefactoring(Refactoring):
         changers.append(change_signature.ArgumentReorderer(
             order, autodef='None'))
 
-        return refactor.get_changes(changers)
+        return refactor.get_changes(changers, in_hierarchy=in_hierarchy)
 
 
 class GenerateElementRefactoring(Refactoring):
@@ -798,7 +772,7 @@ class GenerateElementRefactoring(Refactoring):
         return generate.create_generate(
             self.kind, ctx.project, ctx.resource, offset)
 
-    def get_changes(self, refactor, input_str):
+    def get_changes(self, refactor, input_str, in_hierarchy=False):
         """ Function description.
 
         :return Rope.changes:
@@ -944,4 +918,18 @@ def _insert_import(name, module, ctx):
     ctx.project.do(changes, task_handle=progress.handle)
     reload_changes(changes)
 
-# pylama:ignore=W1401,E1120,D
+
+# Monkey patch Rope
+def find_source_folders(self, folder):
+    """Look only python files an packages."""
+    for resource in folder.get_folders():
+        if self._is_package(resource):  # noqa
+            return [folder]
+
+    for resource in folder.get_files():
+        if resource.name.endswith('.py'):
+            return [folder]
+
+    return []
+
+pycore.PyCore._find_source_folders = find_source_folders  # noqa

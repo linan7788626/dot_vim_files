@@ -16,6 +16,9 @@ function! s:generate_names()
         let modified = g:bufferline_modified
       endif
       let fname = fnamemodify(bufname(i), g:bufferline_fname_mod)
+      if g:bufferline_pathshorten != 0
+        let fname = pathshorten(fname)
+      endif
       let fname = substitute(fname, "%", "%%", "g")
 
       let skip = 0
@@ -76,6 +79,10 @@ function! bufferline#get_echo_string()
 endfunction
 
 function! s:echo()
+  if &filetype ==# 'unite'
+    return
+  endif
+
   let line = bufferline#get_echo_string()
 
   " 12 is magical and is the threshold for when it doesn't wrap text anymore

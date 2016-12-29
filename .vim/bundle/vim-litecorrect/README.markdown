@@ -10,11 +10,26 @@ Features of this plugin:
 
 * Focused on the most common of typos
 * Pure Vimscript using the efficient `iabbrev`
-* Included auto-correct entries limited to 300 for fast loading
+* Included auto-correct entries limited to 350 (in 2016) to ensure fast
+  loading (see **new** expansion policy below)
 * Buffer-scoped behavior (won’t touch global settings)
 
 Note that this plugin is not intended to be a replacement for teh spell
 checker in Vim. It’s best used with spell-check enabled.
+
+## Expansion policy (**NEW**)
+
+Since it was created in 2013, _litecorrect_ has limited the number of
+default auto-correct entries (such as `teh`->`the`) to 300, avoiding the
+excessive load times of comparable plugins and focusing on the most common
+of typos.
+
+Meanwhile, the adoption of new disk technologies reduces the penalty we
+pay when initializing plugins. This provides _litecorrect_ an opportunity
+to grow while not significantly impacting load-time performance.
+
+Henceforth, _litecorrect_ will expand by up to 50 entries each year. For
+2016 it will grow to 350 entries. For 2017, 400 entries, and so on.
 
 ## Requirements
 
@@ -22,8 +37,13 @@ May require a recent version of Vim.
 
 ## Installation
 
-Install using Pathogen, Vundle, Neobundle, or your favorite Vim package
-manager.
+_litecorrect_ is best installed using a Vim package manager, such
+as [Vundle][vnd], [Plug][plg], [NeoBundle][nbn], or [Pathogen][pth].
+
+[vnd]: https://github.com/gmarik/Vundle.vim
+[plg]: https://github.com/junegunn/vim-plug
+[nbn]: https://github.com/Shougo/neobundle.vim
+[pth]: https://github.com/tpope/vim-pathogen
 
 ## Configuration
 
@@ -65,8 +85,8 @@ there’s a conflict, your correction will prevail.
 ### Correct previous misspelling
 
 To augment _litecorrect_ you may find the following key mapping useful.
-It forces the top-ranked correction on the first misspelled word 
-before the cursor. 
+It forces the top-ranked correction on the first misspelled word
+before the cursor.
 
 Add to your `.vimrc` with a key mapping of your choice:
 
@@ -75,7 +95,7 @@ nnoremap <C-s> [s1z=<c-o>
 inoremap <C-s> <c-g>u<Esc>[s1z=`]A<c-g>u
 ```
 
-It generates a fresh undo point prior to the correction so 
+It generates a fresh undo point prior to the correction so
 that you can conveniently undo if necessary.
 
 Note that _litecorrect_ does not map any keys.
@@ -100,7 +120,7 @@ shouldn't -> shouldn’t
 that's -> that’s
 ```
 
-## Criteria to modify default entries
+## Criteria to add (or modify) default entries
 
 Note that the number of default entries will be limited to 300 for fast
 loading.
@@ -111,16 +131,17 @@ will replace.
 
 ## Related projects
 
-For a more comprehensive approach with _many_ more entries, check out:
+If load time performance isn’t an issue, you may seek a more
+comprehensive approach:
 
 * [wordlist.vim](https://github.com/vim-scripts/wordlist.vim) - nearly 800 entries
 * [vim-autocorrect](https://github.com/panozzaj/vim-autocorrect) - over 12K entries!
 
-A warning that larger entry counts make for slower loading.
+An alternative that builds on [tpope/vim-abolish][va]:
 
-Another approach that builds on [tpope/vim-abolish]:
+* [vim-correction](https://github.com/jdelkins/vim-correction) - approx. 700 entries
 
-* [vim-correction](https://github.com/jdelkins/vim-correction)
+[va]: http://github.com/tpope/vim-abolish
 
 ## See also
 

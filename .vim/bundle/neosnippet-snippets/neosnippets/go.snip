@@ -1,3 +1,5 @@
+source go.vim
+
 snippet     helloworld
 abbr        package main\nimport fmt...
 options     head
@@ -31,11 +33,13 @@ options     head
   ${0:TARGET}
 
 snippet     printf
-options     word
+alias pf
+options     head
   fmt.Printf("${1}\n"${2:})
 
 snippet     println
-options     word
+alias pl
+options     head
   fmt.Println(${0:TARGET})
 
 snippet     struct
@@ -65,9 +69,17 @@ options     head
 
 snippet     if
 options     head
-    if ${1:err != nil} {
-        ${0:TARGET}
+    if ${1:#:condition} {
+      ${0:TARGET}
     }
+
+snippet     iferr
+alias       ife
+options     head
+    if err != nil {
+      return `g:NeosnippetSnippets_Goiferr()`
+    }
+    ${2}
 
 snippet     switch
 abbr        switch {}
@@ -89,3 +101,4 @@ snippet     case
 options     head
   case ${1:#:condition}:
     ${2:TARGET}
+
