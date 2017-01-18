@@ -64,8 +64,10 @@ endfunction
 "let g:syntastic_auto_loc_list = 1
 "let g:syntastic_check_on_open = 0
 "let g:syntastic_check_on_wq = 0
-"let g:syntastic_python_checkers=['flake8']
-"let g:syntastic_python_flake8_args='--ignore=E501,E225,E901'
+let g:syntastic_python_checkers=['flake8']
+let g:syntastic_python_flake8_args='--ignore=E501,E225,E901'
+let g:pymode_lint_ignore = "E501,E225,E901,E221"
+let g:pep8_ignore="E501,E225,E901,E221"
 
 map <F8> :call FormartSrc()<CR>
 
@@ -131,4 +133,4 @@ nnoremap <silent> <S-t> :tabnew<CR>
   "endif
 "endfunction
 
-"autocmd WinEnter * if winnr('$') == 1 && ! empty(&buftype) && ! &modified | quit | endif
+autocmd WinEnter * if winnr('$') == 1 && ! empty(&buftype) && ! &modified | quit | endif

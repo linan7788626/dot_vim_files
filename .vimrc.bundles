@@ -122,6 +122,7 @@
             "if !exists('g:spf13_no_views')
                 "Bundle 'vim-scripts/restore_view.vim'
             "endif
+            Bundle 'vim-scripts/restore_view.vim'
             Bundle 'mhinz/vim-signify'
             Bundle 'tpope/vim-abolish.git'
             Bundle 'osyo-manga/vim-over'
