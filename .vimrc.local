@@ -1,6 +1,8 @@
 set encoding=utf-8
 set t_Co=256
 
+set timeout timeoutlen=3000 ttimeoutlen=100
+
 "" highlight current column "
 "set cursorcolumn
 

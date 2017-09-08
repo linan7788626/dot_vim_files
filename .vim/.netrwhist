@@ -1,11 +1,4 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =9
-let g:netrw_dirhist_1='/Users/uranus/GitHub/Hoopla/assets'
-let g:netrw_dirhist_2='/Users/uranus/GitHub/Hoopla/assets/css'
-let g:netrw_dirhist_3='/Users/uranus/Desktop/working/wl_emulator/power_spectrums/FrankenEmu/cmb_output_pk'
-let g:netrw_dirhist_4='/Users/uranus/Desktop/working/wl_emulator/power_spectrums/FrankenEmu/des_output_pk'
-let g:netrw_dirhist_5='/Users/uranus/.local/lib/python2.7'
-let g:netrw_dirhist_6='/Users/uranus/.local/lib/python2.7/site-packages'
-let g:netrw_dirhist_7='/Users/uranus/.conda'
-let g:netrw_dirhist_8='/Users/uranus/.local/lib/python2.7/site-packages'
-let g:netrw_dirhist_9='/Users/uranus/GitHub/hack_with_Matt/amatching_for_twinkles/twinkles_DESC_SLAC'
+let g:netrw_dirhist_cnt =2
+let g:netrw_dirhist_1='/Users/uranus/GitHub/hack_with_Matt/codes_for_hackweek/twinkles_DESC_SLAC'
+let g:netrw_dirhist_2='/Users/uranus/Desktop/mlp_lsst_mocks/triangles_mapping'
