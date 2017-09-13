@@ -18,8 +18,8 @@ let g:indent_guides_auto_colors = 0
 let g:bufferline_echo=0
 
 " enable tender airline theme "
-let g:tender_airline = 1
-let g:airline_theme='powerlineish'
+"let g:tender_airline = 1
+"let g:airline_theme='powerlineish'
 "let g:airline_theme='tomorrow'
 "let g:airline_theme='onedark'
 
