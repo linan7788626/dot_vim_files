@@ -1,7 +1,9 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_cnt =7
 let g:netrw_dirhist_1='/Users/uranus/GitHub/hack_with_Matt/codes_for_hackweek/twinkles_DESC_SLAC'
 let g:netrw_dirhist_2='/Users/uranus/Desktop/mlp_lsst_mocks/triangles_mapping'
 let g:netrw_dirhist_3='/Users/uranus/Desktop/job_hunting/updated_cvs/docs_for_ALCF'
 let g:netrw_dirhist_4='/Users/uranus/Desktop/job_hunting/updated_cvs/docs_for_ALCF/long_cv'
 let g:netrw_dirhist_5='/Users/uranus/Desktop/LensPop-master'
+let g:netrw_dirhist_6='/Users/uranus/.local/lib/python2.7'
+let g:netrw_dirhist_7='/Users/uranus/.local/lib/python2.7/site-packages'
