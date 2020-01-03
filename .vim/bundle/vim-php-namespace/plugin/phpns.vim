@@ -8,6 +8,8 @@
 
 let s:capture = 0
 
+let g:php_namespace_sort = get(g:, 'php_namespace_sort', "'{,'}-1sort i")
+
 let g:php_namespace_sort_after_insert = get(g:, 'php_namespace_sort_after_insert', 0)
 
 function! PhpFindMatchingUse(name)
@@ -32,6 +34,7 @@ function! PhpFindFqn(name)
     let restorepos = line(".") . "normal!" . virtcol(".") . "|"
     let loadedCount = 0
     let tags = []
+
     try
         let fqn = PhpFindMatchingUse(a:name)
         if fqn isnot 0
@@ -58,7 +61,7 @@ function! PhpFindFqn(name)
             return
         endtry
         1
-        if search('^\s*\%(\%(abstract\|final\)\_s\+\)*\%(class\|interface\|trait\)\_s\+' . a:name . '\>') > 0
+        if search('^\s*\%(/\*.*\*/\s*\)\?\%(\%(abstract\|final\)\_s\+\)*\%(class\|interface\|trait\)\_s\+' . a:name . '\>') > 0
             if search('^\%(<?\%(php\s\+\)\?\)\?\s*namespace\s\+', 'be') > 0
                 let start = col('.')
                 call search('\([[:blank:]]*[[:alnum:]\\_]\)*', 'ce')
@@ -66,7 +69,7 @@ function! PhpFindFqn(name)
                 let ns = strpart(getline(line('.')), start, end-start)
                 return ['class', ns . "\\" . a:name]
             else
-                return a:name
+                return ['class', a:name]
             endif
         elseif search('^\s*function\_s\+' . a:name . '\>') > 0
             if search('^\%(<?\%(php\s\+\)\?\)\?\s*namespace\s\+', 'be') > 0
@@ -107,16 +110,17 @@ function! PhpInsertUse()
     exe "normal mz"
     " move to the first component
     " Foo\Bar => move to the F
-    call search('[[:alnum:]\\_]\+', 'bcW')
+    call search('[[:alnum:]\\:_]\+', 'bcW')
     let cur_name = expand("<cword>")
     try
-        let fqn = PhpFindMatchingUse(cur_name)
+        let search_phrase = substitute(cur_name, "::class", "", "")
+        let fqn = PhpFindMatchingUse(search_phrase)
         if fqn isnot 0
             exe "normal! `z"
-            echo "import for " . cur_name . " already exists"
+            echo "import for " . search_phrase . " already exists"
             return
         endif
-        let tfqn = PhpFindFqn(cur_name)
+        let tfqn = PhpFindFqn(search_phrase)
         if tfqn is 0
             echo "fully qualified class name was not found"
             return
@@ -180,9 +184,7 @@ function! PhpSortUse()
     let restorepos = line(".") . "normal!" . virtcol(".") . "|"
      " insert after last use or namespace or <?php
     if search('^use\_s\_[[:alnum:][:blank:]\\_]*;', 'be') > 0
-        execute "'{,'}-1sort"
-    else
-        throw "No use statements found."
+        execute g:php_namespace_sort
     endif
     exe restorepos
 endfunction

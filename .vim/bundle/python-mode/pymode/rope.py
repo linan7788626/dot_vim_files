@@ -1,7 +1,5 @@
 """Integration with Rope library."""
 
-from __future__ import absolute_import, print_function
-
 import os.path
 import re
 import site
@@ -94,7 +92,8 @@ def complete(dot=False):
     line = env.lines[row - 1]
     cline = line[:col] + p_prefix + line[col:]
     if cline != line:
-        env.curbuf[row - 1] = env.prepare_value(cline, dumps=False)
+        if 'noinsert' not in env.var('&completeopt'):
+            env.curbuf[row - 1] = env.prepare_value(cline, dumps=False)
     env.current.window.cursor = (row, col + len(p_prefix))
     env.run('complete', col - len(prefix) + len(p_prefix) + 1, proposals)
     return True
@@ -183,8 +182,9 @@ def find_it():
             filename=oc.resource.path,
             text=env.lines[oc.lineno - 1] if oc.resource.real_path == env.curbuf.name else "", # noqa
             lnum=oc.lineno,
+            type=''
         ))
-    env.let('loclist._loclist', lst)
+    env.run('g:PymodeLocList.current().extend', lst)
 
 
 def update_python_path(paths):
@@ -233,6 +233,8 @@ def new():
         default = env.var('g:pymode_rope_project_root')
         if not default:
             default = env.var('getcwd()')
+        if sys.platform.startswith('win32'):
+            default = default.replace('\\', '/')
         root = env.var('input("Enter project root: ", "%s")' % default)
     ropefolder = env.var('g:pymode_rope_ropefolder')
     prj = project.Project(projectroot=root, ropefolder=ropefolder)
@@ -575,7 +577,7 @@ class ExtractMethodRefactoring(Refactoring):
         _, offset1 = env.get_offset_params(cursor1)
         _, offset2 = env.get_offset_params(cursor2)
         return extract.ExtractMethod(
-            ctx.project, ctx.resource, offset1, offset2)
+            ctx.project, ctx.resource, offset1, offset2 + 1)
 
 
 class ExtractVariableRefactoring(Refactoring):
@@ -599,7 +601,7 @@ class ExtractVariableRefactoring(Refactoring):
         _, offset1 = env.get_offset_params(cursor1)
         _, offset2 = env.get_offset_params(cursor2)
         return extract.ExtractVariable(
-            ctx.project, ctx.resource, offset1, offset2)
+            ctx.project, ctx.resource, offset1, offset2 + 1)
 
 
 class InlineRefactoring(Refactoring):
@@ -893,7 +895,7 @@ def _insert_import(name, module, ctx):
         return True
 
     pyobject = ctx.project.pycore.resource_to_pyobject(ctx.resource)
-    import_tools = importutils.ImportTools(ctx.project.pycore)
+    import_tools = importutils.ImportTools(ctx.project)
     module_imports = import_tools.module_imports(pyobject)
     new_import = importutils.FromImport(module, 0, [[name, None]])
     module_imports.add_import(new_import)

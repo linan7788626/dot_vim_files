@@ -1,38 +1,16 @@
 "=============================================================================
 " FILE: helpers.vim
-" AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" License: MIT license  {{{
-"     Permission is hereby granted, free of charge, to any person obtaining
-"     a copy of this software and associated documentation files (the
-"     "Software"), to deal in the Software without restriction, including
-"     without limitation the rights to use, copy, modify, merge, publish,
-"     distribute, sublicense, and/or sell copies of the Software, and to
-"     permit persons to whom the Software is furnished to do so, subject to
-"     the following conditions:
-"
-"     The above copyright notice and this permission notice shall be included
-"     in all copies or substantial portions of the Software.
-"
-"     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-"     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-"     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-"     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-"     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-"     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-"     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-" }}}
+" AUTHOR:  Shougo Matsushita <Shougo.Matsu at gmail.com>
+" License: MIT license
 "=============================================================================
 
-let s:save_cpo = &cpo
-set cpo&vim
-
-function! neosnippet#helpers#get_cursor_snippet(snippets, cur_text) abort "{{{
+function! neosnippet#helpers#get_cursor_snippet(snippets, cur_text) abort
   let cur_word = matchstr(a:cur_text, '\S\+$')
-  if cur_word != '' && has_key(a:snippets, cur_word)
+  if cur_word !=# '' && has_key(a:snippets, cur_word)
       return cur_word
   endif
 
-  while cur_word != ''
+  while cur_word !=# ''
     if has_key(a:snippets, cur_word) &&
           \ a:snippets[cur_word].options.word
       return cur_word
@@ -42,9 +20,9 @@ function! neosnippet#helpers#get_cursor_snippet(snippets, cur_text) abort "{{{
   endwhile
 
   return cur_word
-endfunction"}}}
+endfunction
 
-function! neosnippet#helpers#get_snippets(...) abort "{{{
+function! neosnippet#helpers#get_snippets(...) abort
   let mode = get(a:000, 0, mode())
 
   call neosnippet#init#check()
@@ -69,28 +47,29 @@ function! neosnippet#helpers#get_snippets(...) abort "{{{
 
   if exists('b:neosnippet_disable_snippet_triggers')
     call filter(snippets,
-          \ "index(b:neosnippet_disable_snippet_triggers, v:val.word) < 0")
+          \ 'index(b:neosnippet_disable_snippet_triggers, v:val.word) < 0')
   endif
 
   return snippets
-endfunction"}}}
-function! neosnippet#helpers#get_completion_snippets() abort "{{{
+endfunction
+function! neosnippet#helpers#get_completion_snippets() abort
   return filter(neosnippet#helpers#get_snippets(),
         \ "!get(v:val.options, 'oneshot', 0)")
-endfunction"}}}
+endfunction
 
-function! neosnippet#helpers#get_snippets_directory() abort "{{{
-  let snippets_dir = copy(neosnippet#variables#snippets_dir())
-  if !get(g:neosnippet#disable_runtime_snippets,
-        \ neosnippet#helpers#get_filetype(),
+function! neosnippet#helpers#get_snippets_directory(...) abort
+  let filetype = get(a:000, 0, neosnippet#helpers#get_filetype())
+  let snippets_dir = []
+  if !get(g:neosnippet#disable_runtime_snippets, filetype,
         \ get(g:neosnippet#disable_runtime_snippets, '_', 0))
     let snippets_dir += neosnippet#variables#runtime_dir()
   endif
+  let snippets_dir += copy(neosnippet#variables#snippets_dir())
 
   return snippets_dir
-endfunction"}}}
+endfunction
 
-function! neosnippet#helpers#get_filetype() abort "{{{
+function! neosnippet#helpers#get_filetype() abort
   " context_filetype.vim installation check.
   if !exists('s:exists_context_filetype')
     silent! call context_filetype#version()
@@ -100,14 +79,14 @@ function! neosnippet#helpers#get_filetype() abort "{{{
   let context_filetype =
         \ s:exists_context_filetype ?
         \ context_filetype#get_filetype() : &filetype
-  if context_filetype == ''
+  if context_filetype ==# ''
     let context_filetype = 'nothing'
   endif
 
   return context_filetype
-endfunction"}}}
+endfunction
 
-function! neosnippet#helpers#get_selected_text(type, ...) abort "{{{
+function! neosnippet#helpers#get_selected_text(type, ...) abort
   let sel_save = &selection
   let &selection = 'inclusive'
   let reg_save = @@
@@ -116,13 +95,13 @@ function! neosnippet#helpers#get_selected_text(type, ...) abort "{{{
   try
     " Invoked from Visual mode, use '< and '> marks.
     if a:0
-      silent exe "normal! `<" . a:type . "`>y"
-    elseif a:type == 'line'
+      silent exe 'normal! `<' . a:type . '`>y'
+    elseif a:type ==# 'line'
       silent exe "normal! '[V']y"
-    elseif a:type == 'block'
-      silent exe "normal! `[\<C-v>`]y"
+    elseif a:type ==# 'block'
+      silent exe 'normal! `[\<C-v>`]y'
     else
-      silent exe "normal! `[v`]y"
+      silent exe 'normal! `[v`]y'
     endif
 
     return @@
@@ -131,8 +110,8 @@ function! neosnippet#helpers#get_selected_text(type, ...) abort "{{{
     let @@ = reg_save
     call setpos('.', pos)
   endtry
-endfunction"}}}
-function! neosnippet#helpers#delete_selected_text(type, ...) abort "{{{
+endfunction
+function! neosnippet#helpers#delete_selected_text(type, ...) abort
   let sel_save = &selection
   let &selection = 'inclusive'
   let reg_save = @@
@@ -141,21 +120,21 @@ function! neosnippet#helpers#delete_selected_text(type, ...) abort "{{{
   try
     " Invoked from Visual mode, use '< and '> marks.
     if a:0
-      silent exe "normal! `<" . a:type . "`>d"
+      silent exe 'normal! `<' . a:type . '`>d'
     elseif a:type ==# 'V'
-      silent exe "normal! `[V`]s"
+      silent exe 'normal! `[V`]s'
     elseif a:type ==# "\<C-v>"
-      silent exe "normal! `[\<C-v>`]d"
+      silent exe 'normal! `[\<C-v>`]d'
     else
-      silent exe "normal! `[v`]d"
+      silent exe 'normal! `[v`]d'
     endif
   finally
     let &selection = sel_save
     let @@ = reg_save
     call setpos('.', pos)
   endtry
-endfunction"}}}
-function! neosnippet#helpers#substitute_selected_text(type, text) abort "{{{
+endfunction
+function! neosnippet#helpers#substitute_selected_text(type, text) abort
   let sel_save = &selection
   let &selection = 'inclusive'
   let reg_save = @@
@@ -164,46 +143,75 @@ function! neosnippet#helpers#substitute_selected_text(type, text) abort "{{{
   try
     " Invoked from Visual mode, use '< and '> marks.
     if a:0
-      silent exe "normal! `<" . a:type . "`>s" . a:text
+      silent exe 'normal! `<' . a:type . '`>s' . a:text
     elseif a:type ==# 'V'
       silent exe "normal! '[V']hs" . a:text
     elseif a:type ==# "\<C-v>"
       silent exe "normal! `[\<C-v>`]s" . a:text
     else
-      silent exe "normal! `[v`]s" . a:text
+      silent exe 'normal! `[v`]s' . a:text
     endif
   finally
     let &selection = sel_save
     let @@ = reg_save
     call setpos('.', pos)
   endtry
-endfunction"}}}
+endfunction
 
-function! neosnippet#helpers#vim2json(expr) abort "{{{
-  return has('patch-7.4.1498') ? js_encode(a:expr) : string(a:expr)
-endfunction "}}}
-function! neosnippet#helpers#json2vim(expr) abort "{{{
-  sandbox return has('patch-7.4.1498') ? js_decode(a:expr) : eval(a:expr)
-endfunction "}}}
+function! neosnippet#helpers#vim2json(expr) abort
+  return has('patch-7.4.1498') ? json_encode(a:expr) : string(a:expr)
+endfunction
+function! neosnippet#helpers#json2vim(expr) abort
+  sandbox return has('patch-7.4.1498') ? json_decode(a:expr) : eval(a:expr)
+endfunction
 
-function! s:is_beginning_of_line(cur_text) abort "{{{
+function! s:is_beginning_of_line(cur_text) abort
   let keyword_pattern = '\S\+'
   let cur_keyword_str = matchstr(a:cur_text, keyword_pattern.'$')
   let line_part = a:cur_text[: -1-len(cur_keyword_str)]
   let prev_word_end = matchend(line_part, keyword_pattern)
 
   return prev_word_end <= 0
-endfunction"}}}
+endfunction
 
-function! s:get_sources_filetypes(filetype) abort "{{{
+function! s:get_sources_filetypes(filetype) abort
   let filetypes =
         \ exists('*context_filetype#get_filetypes') ?
         \   context_filetype#get_filetypes(a:filetype) :
-        \ split(((a:filetype == '') ? 'nothing' : a:filetype), '\.')
-  return ['_'] + filetypes
-endfunction"}}}
+        \ split(((a:filetype ==# '') ? 'nothing' : a:filetype), '\.')
+  return neosnippet#util#uniq(['_'] + filetypes + [a:filetype])
+endfunction
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
+function! s:get_list() abort
+  if !exists('s:List')
+    let s:List = vital#of('neosnippet').import('Data.List')
+  endif
+  return s:List
+endfunction
 
-" vim: foldmethod=marker
+function! neosnippet#helpers#get_snippets_files(filetype) abort
+  let path = join(neosnippet#helpers#get_snippets_directory(), ',')
+  let snippets_files = []
+  for glob in s:get_list().flatten(
+        \ map(split(get(g:neosnippet#scope_aliases,
+        \   a:filetype, a:filetype), '\s*,\s*'), "
+        \   [v:val.'.snip', v:val.'.snippets',
+        \    v:val.'/**/*.snip', v:val.'/**/*.snippets']
+        \ + (a:filetype !=# '_' &&
+        \    !has_key(g:neosnippet#scope_aliases, a:filetype) ?
+        \    [v:val . '_*.snip', v:val . '_*.snippets'] : [])"))
+    let snippets_files += split(globpath(path, glob), '\n')
+  endfor
+  return s:get_list().uniq(snippets_files)
+endfunction
+function! neosnippet#helpers#get_snippet_files(filetype) abort
+  let path = join(neosnippet#helpers#get_snippets_directory(), ',')
+  let snippet_files = []
+  for glob in s:get_list().flatten(
+        \ map(split(get(g:neosnippet#scope_aliases,
+        \   a:filetype, a:filetype), '\s*,\s*'), "
+        \   [v:val.'/*.snippet']"))
+    let snippet_files += split(globpath(path, glob), '\n')
+  endfor
+  return s:get_list().uniq(snippet_files)
+endfunction

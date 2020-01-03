@@ -4,7 +4,7 @@
 " Author:      Jan Larres <jan@majutsushi.net>
 " Licence:     Vim licence
 " Website:     http://majutsushi.github.com/tagbar/
-" Version:     2.6.1
+" Version:     2.7
 " Note:        This plugin was heavily inspired by the 'Taglist' plugin by
 "              Yegappan Lakshmanan and uses a small amount of code from it.
 "
@@ -20,7 +20,7 @@
 
 scriptencoding utf-8
 
-if &cp || exists('g:loaded_tagbar')
+if &compatible || exists('g:loaded_tagbar')
     finish
 endif
 
@@ -67,6 +67,7 @@ function! s:setup_options() abort
         \ ['indent', 2],
         \ ['left', 0],
         \ ['previewwin_pos', previewwin_pos],
+        \ ['show_balloon', 1],
         \ ['show_visibility', 1],
         \ ['show_linenumbers', 0],
         \ ['singleclick', 0],
@@ -85,8 +86,8 @@ endfunction
 call s:setup_options()
 
 if !exists('g:tagbar_iconchars')
-    if has('multi_byte') && has('unix') && &encoding == 'utf-8' &&
-     \ (empty(&termencoding) || &termencoding == 'utf-8')
+    if has('multi_byte') && has('unix') && &encoding ==# 'utf-8' &&
+     \ (!exists('+termencoding') || empty(&termencoding) || &termencoding ==# 'utf-8')
         let g:tagbar_iconchars = ['▶', '▼']
     else
         let g:tagbar_iconchars = ['+', '-']
@@ -108,12 +109,15 @@ function! s:setup_keymaps() abort
         \ ['togglefold',    ['o', 'za']],
         \ ['openallfolds',  ['*', '<kMultiply>', 'zR']],
         \ ['closeallfolds', ['=', 'zM']],
+        \ ['incrementfolds',  ['zr']],
+        \ ['decrementfolds',  ['zm']],
         \ ['nextfold',      'zj'],
         \ ['prevfold',      'zk'],
         \
         \ ['togglesort',            's'],
         \ ['togglecaseinsensitive', 'i'],
         \ ['toggleautoclose',       'c'],
+        \ ['togglepause',           't'],
         \ ['zoomwin',               'x'],
         \ ['close',                 'q'],
         \ ['help',                  ['<F1>', '?']],
@@ -141,8 +145,8 @@ command! -nargs=1 -bang TagbarSetFoldlevel  call tagbar#SetFoldLevel(<args>, <ba
 command! -nargs=0 TagbarShowTag       call tagbar#highlighttag(1, 1)
 command! -nargs=? TagbarCurrentTag    echo tagbar#currenttag('%s', 'No current tag', <f-args>)
 command! -nargs=1 TagbarGetTypeConfig call tagbar#gettypeconfig(<f-args>)
-command! -nargs=? TagbarDebug         call tagbar#StartDebug(<f-args>)
-command! -nargs=0 TagbarDebugEnd      call tagbar#StopDebug()
+command! -nargs=? TagbarDebug         call tagbar#debug#start_debug(<f-args>)
+command! -nargs=0 TagbarDebugEnd      call tagbar#debug#stop_debug()
 command! -nargs=0 TagbarTogglePause   call tagbar#toggle_pause()
 
 " Modeline {{{1

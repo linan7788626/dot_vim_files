@@ -1,6 +1,6 @@
 *ctrlp-funky.txt* *ctrlp-funky*
 A super simple function navigator for ctrlp.vim
-Version: 0.11.0
+Version: 0.12.0
 Author:  Takahiro Yoshihara <https://github.com/tacahiroy>
 
 
@@ -26,16 +26,20 @@ installed ctrlp.vim plugin.
 Currently, |ctrlp-funky| supports following file types:
 
 * c
+* cf (ColdFusion)
 * clojure
 * cmm (TRACE32)
 * coffee-script
+* coldfusion
 * cpp (C++)
 * cs (C#)
 * css (css, scss)
 * dart
 * elixir
 * elm
-* go (golang)
+* go (Golang)
+* graphql
+* groovy
 * haskell
 * html/xhtml
 * java
@@ -53,15 +57,18 @@ Currently, |ctrlp-funky| supports following file types:
 * proto (Protocol Buffers)
 * python
 * r
+* rmd (rmarkdown)
 * ruby (ruby, rake, rspec and chef recipe)
 * rust
 * scala
 * sh (bash, dash and zsh)
 * sql
 * tex (LaTeX)
+* thrift
 * typescript
 * vb (Visual Basic)
 * vim
+* vue (Vue.js)
 * yaml
 
 
@@ -386,51 +393,83 @@ THANKS						*ctrlp-funky-thanks*
 
   * *kien* <github.com/kien> - the author of ctrlp.vim
 
-  * *pydave*          <github.com/pydave>
-  * *curist*          <github.com/curist>
-  * *Benoit*          <github.com/saalaa>
-  * *tokorom*         <github.com/tokorom>
-  * *robmiller*       <github.com/robmiller>
-  * *unc0*            <github.com/unc0>
-  * *hlissner*        <github.com/hlissner>
-  * *mephux*          <github.com/mephux>
-  * *dusans*          <github.com/dusans>
-  * *kirstein*        <github.com/kirstein>
-  * *mmazer*          <github.com/mmazer>
-  * *vitalk*          <github.com/vitalk>
-  * *dingmingxin*     <github.com/dingmingxin>
-  * *dictav*          <github.com/dictav>
-  * *axehead*         <github.com/axehead>
-  * *walkingsparrow*  <github.com/walkingsparrow>
-  * *huaihuaiVV*      <github.com/huaihuaiVV>
-  * *rendon*          <github.com/rendon>
-  * *kshenoy*         <github.com/kshenoy>
-  * *mattiaslundberg* <github.com/mattiaslundberg>
-  * *prabirshrestha*  <github.com/prabirshrestha>
-  * *siadat*          <github.com/siadat>
-  * *jean*            <github.com/jean>
-  * *Komnomnomnom*    <github.com/Komnomnomnom>
-  * *timfeirg*        <github.com/timfeirg>
-  * *h14i*            <github.com/h14i>
-  * *ggVGc*           <github.com/ggVGc>
-  * *senft*           <github.com/senft>
-  * *bmenant*         <github.com/bmenant>
-  * *fufler*          <github.com/fufler>
-  * *metainfa*        <github.com/metainfa>
-  * *svenwin*         <github.com/svenwin>
-  * *anstosa*         <github.com/anstosa>
-  * *imran-uk*        <github.com/imran-uk>
-  * *francescarpi*    <github.com/francescarpi>
-  * *somini*          <github.com/somini>
-  * *zaynetro*        <github.com/zaynetro>
-  * *lorenzo*         <github.com/lorenzo>
-  * *minhajuddin*     <github.com/minhajuddin>
-  * *mklinga*         <github.com/mklinga>
-  * *jagtesh*         <github.com/jagtesh>
+  * *pydave*          <https://github.com/pydave>
+  * *curist*          <https://github.com/curist>
+  * *Benoit*          <https://github.com/saalaa>
+  * *tokorom*         <https://github.com/tokorom>
+  * *robmiller*       <https://github.com/robmiller>
+  * *unc0*            <https://github.com/unc0>
+  * *hlissner*        <https://github.com/hlissner>
+  * *mephux*          <https://github.com/mephux>
+  * *dusans*          <https://github.com/dusans>
+  * *kirstein*        <https://github.com/kirstein>
+  * *mmazer*          <https://github.com/mmazer>
+  * *vitalk*          <https://github.com/vitalk>
+  * *dingmingxin*     <https://github.com/dingmingxin>
+  * *dictav*          <https://github.com/dictav>
+  * *axehead*         <https://github.com/axehead>
+  * *walkingsparrow*  <https://github.com/walkingsparrow>
+  * *huaihuaiVV*      <https://github.com/huaihuaiVV>
+  * *rendon*          <https://github.com/rendon>
+  * *kshenoy*         <https://github.com/kshenoy>
+  * *mattiaslundberg* <https://github.com/mattiaslundberg>
+  * *prabirshrestha*  <https://github.com/prabirshrestha>
+  * *siadat*          <https://github.com/siadat>
+  * *jean*            <https://github.com/jean>
+  * *Komnomnomnom*    <https://github.com/Komnomnomnom>
+  * *timfeirg*        <https://github.com/timfeirg>
+  * *h14i*            <https://github.com/h14i>
+  * *ggVGc*           <https://github.com/ggVGc>
+  * *senft*           <https://github.com/senft>
+  * *bmenant*         <https://github.com/bmenant>
+  * *fufler*          <https://github.com/fufler>
+  * *metainfa*        <https://github.com/metainfa>
+  * *svenwin*         <https://github.com/svenwin>
+  * *anstosa*         <https://github.com/anstosa>
+  * *imran-uk*        <https://github.com/imran-uk>
+  * *francescarpi*    <https://github.com/francescarpi>
+  * *somini*          <https://github.com/somini>
+  * *zaynetro*        <https://github.com/zaynetro>
+  * *lorenzo*         <https://github.com/lorenzo>
+  * *minhajuddin*     <https://github.com/minhajuddin>
+  * *mklinga*         <https://github.com/mklinga>
+  * *jagtesh*         <https://github.com/jagtesh>
+  * *haifengkao*      <https://github.com/haifengkao>
+  * *feiyuw*          <https://github.com/feiyuw>
+  * *holybreath*      <https://github.com/holybreath>
+  * *arashm*          <https://github.com/arashm>
+  * *cenksoykan*      <https://github.com/cenksoykan>
 
 
 ==============================================================================
 CHANGELOG 					*ctrlp-funky-changelog*
+
+04 Oct 2019~
+  + Add support for rmarkdown (rmd) (#123) by |cenksoykan|
+
+30 Jan 2019~
+  + Add support for ColdFusion (cf) (#121) by |arashm|
+
+22 Nov 2018~
+  + Fix javascript support to avoid showing up `for`(#83) reported by |holybreath|
+
+20 Oct 2018~
+  + Add async def support for Python (#120) by |feiyuw|
+
+28 Jul 2018~
+  + Add support for objc lightweight generic (#118) by |haifengkao|
+
+24 Jun 2018~
+  + Add support for Vue.js (vue) (#117) by |timfeirg|
+
+2 May 2018~
+  + Add support for GraphQL (#114) by |timfeirg|
+
+30 Apr 2018~
+  + Improve filters for Golang (#113) by |timfeirg|
+
+21 Aug 2017~
+  + Add basic Groovy support
 
 21 Nov 2016~
   + Add super basic support for R
@@ -697,7 +736,7 @@ LICENSE						*ctrlp-funky-license*
 
 |ctrlp-funky| is distributed under the MIT License.
 
-Copyright (c) 2012-2016 Takahiro Yoshihara
+Copyright (c) 2012-2019 Takahiro Yoshihara
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

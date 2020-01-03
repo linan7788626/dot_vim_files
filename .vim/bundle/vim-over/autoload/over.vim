@@ -18,7 +18,7 @@ function! over#vital()
 	if g:over#debug_vital_over
 		let s:V = vital#of("vital")
 	else
-		let s:V = vital#of("over")
+		let s:V = vital#over#new()
 	endif
 	return s:V
 endfunction
@@ -99,7 +99,7 @@ function! s:search_highlight(line)
 	if !s:set_flag
 		let s:search_highlighted = 1
 		let s:set_flag = 1
-		call feedkeys("\<C-o>:set hlsearch | set incsearch\<CR>", 'n')
+" 		call feedkeys("\<C-o>:set hlsearch | set incsearch\<CR>", 'n')
 	endif
 	let @/ = result[1]
 endfunction

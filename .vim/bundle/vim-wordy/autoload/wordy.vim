@@ -34,17 +34,23 @@ function! wordy#init(...) abort
     let l:src_path = l:data_dir . '/' . l:lang . '/' . l:dict . '.dic'
     if filereadable(l:src_path)
       if has('nvim')
-        " Dynamically convert SpellBad words into SpellRare words under NeoVim.
-        " See issue 15 for details: https://github.com/reedes/vim-wordy/pull/15
-        let l:rare_dic = map(readfile(l:src_path), "substitute(v:val, '!$', '?', '')")
-        let l:src_path = tempname()
-        call writefile(l:rare_dic, l:src_path)
+        let l:rare_path = l:src_path . '.rare'
+        if !filereadable(l:rare_path) ||
+          \ getftime(l:rare_path) < getftime(l:src_path)
+          " Dynamically convert SpellBad words into SpellRare words under NeoVim.
+          " See issue 15 for details: https://github.com/reedes/vim-wordy/pull/15
+          let l:rare_dic = map(readfile(l:src_path), "substitute(v:val, '!$', '?', '')")
+          call writefile(l:rare_dic, l:rare_path)
+        endif
+        let l:src_path = l:rare_path
       endif
+
       let l:spell_dir = g:wordy_dir . '/spell'
       if !isdirectory(l:spell_dir)
         call mkdir(expand(l:spell_dir), "p")
       endif
-      let l:dst_path = l:spell_dir . '/' . l:dict . '.' . l:lang . '.' . l:encoding . '.spl'
+      " The dict name is the 'language' part of the filename
+      let l:dst_path = l:spell_dir . '/' . l:dict . '.' . l:encoding . '.spl'
       if get(l:args, 'force', 0) ||
         \ !filereadable(l:dst_path) ||
         \ getftime(l:dst_path) < getftime(l:src_path)
@@ -64,7 +70,9 @@ function! wordy#init(...) abort
   let l:prefix = 'wordy: '
   if len(l:dst_paths) > 0
     let b:original_spl = &spelllang
-    exe 'setlocal spelllang=' . l:lang . ',' . join(l:dst_paths, ',')
+    " vim looks up the files in the ./spell/ directory using spell-load (see
+    " the vim docs) so full paths are not allowed.
+    exe 'setlocal spelllang=' . l:lang . ',' . join(l:dicts, ',')
     setlocal spell
 
     " the magic numbers derived empirically with MacVim
