@@ -53,8 +53,8 @@ function! neosnippet#helpers#get_snippets(...) abort
   return snippets
 endfunction
 function! neosnippet#helpers#get_completion_snippets() abort
-  return filter(neosnippet#helpers#get_snippets(),
-        \ "!get(v:val.options, 'oneshot', 0)")
+  return values(filter(neosnippet#helpers#get_snippets(),
+        \ "!get(v:val.options, 'oneshot', 0)"))
 endfunction
 
 function! neosnippet#helpers#get_snippets_directory(...) abort
@@ -190,17 +190,18 @@ function! s:get_list() abort
 endfunction
 
 function! neosnippet#helpers#get_snippets_files(filetype) abort
-  let path = join(neosnippet#helpers#get_snippets_directory(), ',')
   let snippets_files = []
-  for glob in s:get_list().flatten(
-        \ map(split(get(g:neosnippet#scope_aliases,
-        \   a:filetype, a:filetype), '\s*,\s*'), "
-        \   [v:val.'.snip', v:val.'.snippets',
-        \    v:val.'/**/*.snip', v:val.'/**/*.snippets']
-        \ + (a:filetype !=# '_' &&
-        \    !has_key(g:neosnippet#scope_aliases, a:filetype) ?
-        \    [v:val . '_*.snip', v:val . '_*.snippets'] : [])"))
-    let snippets_files += split(globpath(path, glob), '\n')
+  for path in neosnippet#helpers#get_snippets_directory()
+    for glob in s:get_list().flatten(
+          \ map(split(get(g:neosnippet#scope_aliases,
+          \   a:filetype, a:filetype), '\s*,\s*'), "
+          \   [v:val.'.snip', v:val.'.snippets',
+          \    v:val.'/**/*.snip', v:val.'/**/*.snippets']
+          \ + (a:filetype !=# '_' &&
+          \    !has_key(g:neosnippet#scope_aliases, a:filetype) ?
+          \    [v:val . '_*.snip', v:val . '_*.snippets'] : [])"))
+      let snippets_files += split(globpath(path, glob), '\n')
+    endfor
   endfor
   return s:get_list().uniq(snippets_files)
 endfunction
@@ -214,4 +215,40 @@ function! neosnippet#helpers#get_snippet_files(filetype) abort
     let snippet_files += split(globpath(path, glob), '\n')
   endfor
   return s:get_list().uniq(snippet_files)
+endfunction
+
+function! neosnippet#helpers#get_user_data(completed_item) abort
+  if !has_key(a:completed_item, 'user_data')
+    return {}
+  endif
+
+  let user_data = {}
+  if type(a:completed_item.user_data) ==# v:t_dict
+    let user_data = a:completed_item.user_data
+  else
+    silent! let user_data = json_decode(a:completed_item.user_data)
+  endif
+  if type(user_data) !=# v:t_dict || empty(user_data)
+    return {}
+  endif
+
+  return user_data
+endfunction
+function! neosnippet#helpers#get_lspitem(user_data) abort
+  if has_key(a:user_data, 'lspitem') && type(a:user_data.lspitem) == v:t_dict
+    " For vim-lsp
+    let lspitem = a:user_data.lspitem
+  elseif has_key(a:user_data, 'nvim')
+        \ && type(a:user_data.nvim) == v:t_dict
+        \ && has_key(a:user_data.nvim, 'lsp')
+        \ && type(a:user_data.nvim.lsp) == v:t_dict
+        \ && has_key(a:user_data.nvim.lsp, 'completion_item')
+        \ && type(a:user_data.nvim.lsp.completion_item) == v:t_dict
+    " For nvim-lsp
+    let lspitem = a:user_data.nvim.lsp.completion_item
+  else
+    let lspitem = {}
+  endif
+
+  return lspitem
 endfunction

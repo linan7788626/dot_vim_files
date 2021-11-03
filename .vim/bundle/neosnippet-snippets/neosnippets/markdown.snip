@@ -1,3 +1,9 @@
+snippet heading
+alias section
+abbr # section heading
+options head
+    # ${0}
+
 snippet link
 abbr [link][]
 options word
@@ -11,7 +17,7 @@ options word
 snippet linkurl
 abbr [link](url)
 options word
-    [${1:#:link}](http://${2:#:url})${3}
+    [${1:#:link}](https://${2:#:url})${3}
 
 snippet linkemail
 abbr [link](email)
@@ -26,7 +32,7 @@ options word
 snippet idurl
 abbr [id]: url "title"
 options word
-    [${1:#:id}]: http://${2:#:url} "${3:#:title}"
+    [${1:#:id}]: https://${2:#:url} "${3:#:title}"
 
 snippet idemail
 abbr [id]: email "title"
@@ -79,3 +85,8 @@ options head
     \`\`\`${1:#:language}
     ${2:#:code }
     \`\`\`
+
+snippet blockquote
+abbr quote block
+options head
+    > ${0}

@@ -1,23 +1,27 @@
 ctrlp-funky
 ============
-A super simple function navigator for ctrlp.vim.  
+
+A super simple function navigator for ctrlp.vim.
 
 SYNOPSIS
 ----------
-This is a ctrlp.vim extension. It simply navigates and jumps to function definitions from the current file without ctags. It just searches for function definitions or equivalent lines using regular expressions, therefore some languages' abstractions aren't accurate because of them being hard to parse.
+
+This is an extension of ctrlp.vim. It simply navigates and jumps to function definitions from the current file without ctags. It just searches for function definitions or equivalent lines using regular expressions, therefore some languages' abstractions aren't accurate because of them being hard to parse.
 
 One of advantages of this plugin is that no configuration is required in most cases, so it starts working right after installation with no ctags required.
-*If you want to have a more accurate list of function defs, you should use other ctags-based tools, etc.*
+*If you want to have a more accurate list of function definitions, you should use other ctags-based tools, etc.*
 
 ![ctrlp-funky][1]
 
 ### Supported filetypes:
+
 See [ctrlp-funky.txt](https://github.com/tacahiroy/ctrlp-funky/blob/master/doc/ctrlp-funky.txt#L22)
 
 
 PREMISE
 ----------
-First of all, I believe you're a user of a great Vim plugin called [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim).
+
+First of all, I believe you have already installed a great Vim plugin, [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim).
 Otherwise, you need to install ctrlp.vim before you start using this plugin.
 
 
@@ -25,29 +29,31 @@ INSTALLATION
 ----------
 
 ### Plugin managers
-It is recommended to install the plugin using plugin managers such as minpac, vim-plug, pathogen, Vundle, Dein.vim etc.
-You can copy/paste a line below if you use vim-plug:
-`Plug 'tacahiroy/ctrlp-funky'`
+It is recommended to install the plugin using your favourite plugin manager or use Vim's built-in package manager if you use Vim 8+.
 
 ### Manual installation
-If you use neither of the plugin management systems, copy _autoload_ and _plugin_ directories to _.vim_ directory.
-On Windows, basically, _vimfiles_ directory is used instead of _.vim_ directory.
+If you do not use any plugin management system, simply copy _autoload_ and _plugin_ directories to the _.vim_ directory.
+On Windows, basically, _vimfiles_ directory is used instead of the _.vim_ directory.
 
 
 CONFIGURATION
 --------------
-It should be useful to define key mappings like this:
+
+It is useful to define key mappings for the funky commands as below:
 ```vim
 nnoremap <Leader>fu :CtrlPFunky<Cr>
 " narrow the list down with a word under cursor
-nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+nnoremap <Leader>uu :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
 ```
 
 
 EXPERIMENTAL
 ------------
-### MATCHED CHARS HIGHLIGHTING
-If you want to have this highlight feature, you may configure like this:
+
+### MATCHED CHARACTER HIGHLIGHTINGS
+
+If you want to have this highlight feature, you need to have a configuration
+below in your .vimrc:
 ```vim
 let g:ctrlp_funky_matchtype = 'path'
 ```
@@ -57,17 +63,18 @@ See `:h g:ctrlp_funky_matchtype` for more details and notes.
 
 
 ### SYNTAX HIGHLIGHTING
-I'd like to introduce one of ctrlp-funky options.
-Do you want to make ctrlp-funky funkier? Okay - you can do it with just 1 line of config:
+
+Do you want to make ctrlp-funky funkier? Okay - you can do it with just a single line of config:
 ```vim
 let g:ctrlp_funky_syntax_highlight = 1
 ```
 ![funky-syntax][2]
 
 Note that this feature doesn't work perfectly, because ctrlp-funky just sets
-filetype to the funky buffer and the buffer contains '>' in the first column.
-In some filetypes, this sign has special meaning such as HTML tag, so it breaks
-syntax highlighting.
+the filetype to the funky buffer.
+CtrlP's indicator `>` which appears at the begining of each line in the funky
+buffer has special meaning for some filetypes such as HTML, XML, etc., so it
+breaks syntax highlighting.
 
 
 LINK
@@ -80,7 +87,7 @@ LINK
 LICENSE
 -------
 
-Copyright (C) 2012-2019 Takahiro Yoshihara. Distributed under the MIT License.
+Copyright (C) 2012-2021 Takahiro Yoshihara. Distributed under the MIT License.
 
 [1]: http://i.imgur.com/yO4PWAF.png
 [2]: http://i.imgur.com/CnKui5H.png

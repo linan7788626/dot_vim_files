@@ -129,7 +129,7 @@ function! s:handle_diff(options, exitval) abort
   elseif !empty(sy.updated_by) && sy.updated_by != a:options.vcs
     call sy#verbose(printf('Signs already got updated by %s.', sy.updated_by), a:options.vcs)
     return
-  elseif empty(sy.vcs) && sy.active
+  elseif empty(sy.vcs)
     let sy.detecting -= 1
   endif
 
@@ -257,7 +257,7 @@ endfunction
 
 " #debug_detection {{{1
 function! sy#repo#debug_detection()
-  if !exists('b:sy')
+  if empty(getbufvar(bufnr(''), 'sy'))
     echomsg 'signify: I cannot detect any changes!'
     return
   endif
@@ -365,8 +365,10 @@ endfunction
 
 " #diff_hunk {{{1
 function! sy#repo#diff_hunk() abort
-  if exists('b:sy') && !empty(b:sy.updated_by)
-    call sy#repo#get_diff(bufnr(''), b:sy.updated_by, function('s:diff_hunk'))
+  let bufnr = bufnr('')
+  let sy = getbufvar(bufnr, 'sy')
+  if !empty(sy) && !empty(sy.updated_by)
+    call sy#repo#get_diff(bufnr, sy.updated_by, function('s:diff_hunk'))
   endif
 endfunction
 
@@ -396,8 +398,10 @@ endfunction
 
 " #undo_hunk {{{1
 function! sy#repo#undo_hunk() abort
-  if exists('b:sy') && !empty(b:sy.updated_by)
-    call sy#repo#get_diff(bufnr(''), b:sy.updated_by, function('s:undo_hunk'))
+  let bufnr = bufnr('')
+  let sy = getbufvar(bufnr, 'sy')
+  if !empty(sy) && !empty(sy.updated_by)
+    call sy#repo#get_diff(bufnr, sy.updated_by, function('s:undo_hunk'))
   endif
 endfunction
 
@@ -409,7 +413,7 @@ function! s:undo_hunk(sy, vcs, diff) abort
     return
   endif
 
-  let [_old_line, _old_count, new_line, _new_count] = sy#sign#parse_hunk(header)
+  let [_old_line, _old_count, new_line, new_count] = sy#sign#parse_hunk(header)
 
   for line in hunk
     let op = line[0]
@@ -421,7 +425,7 @@ function! s:undo_hunk(sy, vcs, diff) abort
       endif
       let new_line += 1
     elseif op == '-'
-      call append(new_line-1, text)
+      call append(new_count == 0 ? new_line : new_line - 1, text)
       let new_line += 1
     elseif op == '+'
       if text != getline(new_line)
@@ -465,7 +469,7 @@ endfunction
 function! s:wrap_cmd(bufnr, vcs, cmd) abort
   if has('win32')
     if has('nvim')
-      let cmd = &shell =~ '\v%(cmd|powershell)' ? a:cmd : ['sh', '-c', a:cmd]
+      let cmd = &shell =~ '\v%(cmd|powershell|pwsh)' ? a:cmd : ['sh', '-c', a:cmd]
     else
       if &shell =~ 'cmd'
         let cmd = join([&shell, &shellcmdflag, '(', a:cmd, ')'])

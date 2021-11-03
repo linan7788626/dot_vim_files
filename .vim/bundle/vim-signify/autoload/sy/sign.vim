@@ -3,10 +3,13 @@
 scriptencoding utf-8
 
 " Variables {{{1
-if get(g:, 'signify_sign_show_text', 1)
-  let s:sign_delete = get(g:, 'signify_sign_delete', '_')
+let s:sign_delete = get(g:, 'signify_sign_delete', '_')
+
+" Support for sign priority was added together with sign_place().
+if exists('*sign_place')
+  let s:sign_priority = printf('priority=%d', get(g:, 'signify_priority', 10))
 else
-  let s:sign_delete = ' '
+  let s:sign_priority = ''
 endif
 
 let s:sign_show_count  = get(g:, 'signify_sign_show_count', 1)
@@ -75,7 +78,7 @@ function! sy#sign#process_diff(sy, vcs, diff) abort
     " @@ -5,0 +6,2 @@ this is line 5
     " +this is line 5
     " +this is line 5
-    if (old_count == 0) && (new_count >= 1)
+    if old_count == 0 && new_count > 0
       let added += new_count
       let offset = 0
       while offset < new_count
@@ -90,13 +93,19 @@ function! sy#sign#process_diff(sy, vcs, diff) abort
     " @@ -6,2 +5,0 @@ this is line 5
     " -this is line 6
     " -this is line 7
-    elseif (old_count >= 1) && (new_count == 0)
+    elseif old_count > 0 && new_count == 0
       if s:external_sign_present(a:sy, new_line) | continue | endif
       let deleted += old_count
       if new_line == 0
         call add(ids, s:add_sign(a:sy, 1, 'SignifyRemoveFirstLine'))
       elseif s:sign_show_count
-        let text = s:sign_delete . (old_count <= 99 ? old_count : '>')
+        if old_count > 99
+          let text = s:sign_delete . '>'
+        elseif old_count < 2
+          let text = s:sign_delete
+        else
+          let text = s:sign_delete . old_count
+        endif
         while strwidth(text) > 2
           let text = substitute(text, '.', '', '')
         endwhile
@@ -104,21 +113,68 @@ function! sy#sign#process_diff(sy, vcs, diff) abort
       else
         call add(ids, s:add_sign(a:sy, new_line, 'SignifyDeleteMore', s:sign_delete))
       endif
-
-    " There are additions and deletions, however we don't know which lines are
-    " 'changed' and which are new so we just show the whole block as changed.
-    "
-    " With sufficiently smart heuristics we could see which lines are the most
-    " dissimilar to the previous lines and mark them as additions but for now
-    " we will not do that.
-    else
-      let modified += old_count
-      let offset    = 0
+    " All lines are modified.
+    elseif old_count > 0 && new_count > 0 && old_count == new_count
+      let modified += new_count
+      let offset = 0
       while offset < new_count
         let line    = new_line + offset
         let offset += 1
         if s:external_sign_present(a:sy, line) | continue | endif
         call add(ids, s:add_sign(a:sy, line, 'SignifyChange'))
+      endwhile
+    " Some lines are modified and some new lines are added.
+    elseif old_count > 0 && new_count > 0 && old_count < new_count
+      let modified += old_count
+      let added += new_count - old_count
+      let offset = 0
+      while offset < old_count
+        let line    = new_line + offset
+        let offset += 1
+        if s:external_sign_present(a:sy, line) | continue | endif
+        call add(ids, s:add_sign(a:sy, line, 'SignifyChange'))
+      endwhile
+      while offset < new_count
+        let line    = new_line + offset
+        let offset += 1
+        if s:external_sign_present(a:sy, line) | continue | endif
+        call add(ids, s:add_sign(a:sy, line, 'SignifyAdd'))
+      endwhile
+    " Some lines are modified and some lines are deleted.
+    elseif old_count > 0 && new_count > 0 && old_count > new_count
+      let modified += new_count
+      let deleted_count = old_count - new_count
+      let deleted += deleted_count
+
+      let prev_line_available = new_line > 1 && !get(a:sy.signtable, new_line - 1, 0)
+      if prev_line_available
+        if s:sign_show_count
+          if deleted_count > 99
+            let text = s:sign_delete . '>'
+          elseif deleted_count < 2
+            let text = s:sign_delete
+          else
+            let text = s:sign_delete . deleted_count
+          endif
+          while strwidth(text) > 2
+            let text = substitute(text, '.', '', '')
+          endwhile
+          call add(ids, s:add_sign(a:sy, new_line - 1, 'SignifyDelete'. deleted_count, text))
+        else
+          call add(ids, s:add_sign(a:sy, new_line - 1, 'SignifyDeleteMore', s:sign_delete))
+        endif
+      endif
+
+      let offset = 0
+      while offset < new_count
+        let line    = new_line + offset
+        if s:external_sign_present(a:sy, line) | continue | endif
+        if !prev_line_available && offset == 0
+          call add(ids, s:add_sign(a:sy, line, 'SignifyChangeDelete'))
+        else
+          call add(ids, s:add_sign(a:sy, line, 'SignifyChange'))
+        endif
+        let offset += 1
       endwhile
     endif
 
@@ -152,10 +208,10 @@ endfunction
 
 " #remove_all_signs {{{1
 function! sy#sign#remove_all_signs(bufnr) abort
-  let sy = getbufvar(a:bufnr, 'sy')
+  let sy = getbufvar(a:bufnr, 'sy', {})
 
-  for hunk in sy.hunks
-    for id in hunk.ids
+  for hunk in get(sy, 'hunks', [])
+    for id in get(hunk, 'ids', [])
       execute 'sign unplace' id 'buffer='.a:bufnr
     endfor
   endfor
@@ -229,10 +285,11 @@ function! s:add_sign(sy, line, type, ...) abort
           \ a:1,
           \ s:delete_highlight[g:signify_line_highlight])
   endif
-  execute printf('sign place %d line=%d name=%s buffer=%s',
+  execute printf('sign place %d line=%d name=%s %s buffer=%s',
         \ id,
         \ a:line,
         \ a:type,
+        \ s:sign_priority,
         \ a:sy.buffer)
 
   return id
@@ -240,6 +297,12 @@ endfunction
 
 " s:external_sign_present {{{1
 function! s:external_sign_present(sy, line) abort
+  " If sign priority is supported, so are multiple signs per line.
+  " Therefore, we can report no external signs present and let
+  " g:signify_priority control whether Sy's signs are shown.
+  if !empty(s:sign_priority)
+    return
+  endif
   if has_key(a:sy.external, a:line)
     if has_key(a:sy.internal, a:line)
       " Remove Sy signs from lines with other signs.

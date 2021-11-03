@@ -1,3 +1,3 @@
 syn keyword cssFontAttr contained contents discard
-syn match cssFontAttr contained "\<flow\(-root\)\=\>"
-syn match cssBoxAttr contained "\<ruby\(-\(base\(-group\)\=\|text\(-group\)\=\)\)\=\>"
+syn match cssBoxAttr contained "\<run-in\>"
+syn match cssBoxAttr contained "\<ruby\(-\(base\|text\)\)\=\>"

@@ -1,5 +1,5 @@
 " vi: fdl=1
-let g:pymode_version = "0.10.0"
+let g:pymode_version = "0.13.0"
 
 " Enable pymode by default :)
 call pymode#default('g:pymode', 1)
@@ -37,6 +37,9 @@ call pymode#default('g:pymode_doc_bind', 'K')
 
 " Enable/Disable pymode PEP8 indentation
 call pymode#default("g:pymode_indent", 1)
+
+" Customize hanging indent size different than &shiftwidth
+call pymode#default("g:pymode_indent_hanging_width", -1)
 
 " TODO: currently folding suffers from a bad performance and incorrect
 " implementation. This feature should be considered experimental.
