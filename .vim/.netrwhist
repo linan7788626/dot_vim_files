@@ -1,3 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =1
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/Users/uranus/.local/lib/python2.7/site-packages'
+let g:netrw_dirhist_3='/Users/uranus/.local/lib/python2.7'
+let g:netrw_dirhist_2='/Users/uranus/GitHub/Projects/workLibs/my_lensing_models/lensing_models_c/gnfw_lensing_c'
 let g:netrw_dirhist_1='/Users/uranus/Desktop/enlargeOM10Catalog/scripts'
