@@ -7,6 +7,7 @@ function! sy#repo#detect(bufnr) abort
   let sy = getbufvar(a:bufnr, 'sy')
   for vcs in s:vcs_list
     let sy.detecting += 1
+    let g:signify_detecting += 1
     call sy#repo#get_diff(a:bufnr, vcs, function('sy#sign#set_signs'))
   endfor
 endfunction
@@ -130,6 +131,7 @@ function! s:handle_diff(options, exitval) abort
     call sy#verbose(printf('Signs already got updated by %s.', sy.updated_by), a:options.vcs)
     return
   elseif empty(sy.vcs)
+    let g:signify_detecting -= 1
     let sy.detecting -= 1
   endif
 
@@ -308,6 +310,10 @@ function! sy#repo#diffmode(do_tab) abort
   let base = s:get_base(bufnr(''), vcs)
 
   leftabove vnew
+
+  let undolevels = &l:undolevels
+  setlocal undolevels=-1
+
   if (fenc != &enc) && has('iconv')
     silent put =iconv(base, fenc, &enc)
   else
@@ -317,6 +323,7 @@ function! sy#repo#diffmode(do_tab) abort
   silent 1delete
   set buftype=nofile bufhidden=wipe nomodified
   let &filetype = ft
+  let &l:undolevels = undolevels
   diffthis
   wincmd p
   normal! ]czt

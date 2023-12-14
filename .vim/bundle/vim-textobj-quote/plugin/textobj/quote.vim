@@ -1,7 +1,7 @@
 " ============================================================================
 " File:        textobj_quote.vim
 " Description: load functions for vim-textobj-quote plugin
-" Maintainer:  Reed Esau <github.com/reedes>
+" Maintainer:  preservim <https://github.com/preservim>
 " Created:     February 6, 2013
 " License:     The MIT License (MIT)
 " ============================================================================
@@ -56,7 +56,7 @@ endif
 " needed to match pairs of quotes (via tpope/vim-sensible)
 if g:textobj#quote#matchit &&
       \ !exists('g:loaded_matchit') &&
-      \ findfile('plugin/matchit.vim', &rtp) ==# ''
+      \ findfile('plugin/matchit.vim', &runtimepath) ==# ''
   runtime! macros/matchit.vim
 endif
 

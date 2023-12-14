@@ -69,7 +69,7 @@ function! webapi#http#decodeURI(str) abort
 endfunction
 
 function! webapi#http#escape(str) abort
-  return substitute(a:str, '[^a-zA-Z0-9_.~/-]', '\=s:urlencode_char(submatch(0))', 'g')
+  return substitute(a:str, '[^a-zA-Z0-9_./-]', '\=s:urlencode_char(submatch(0))', 'g')
 endfunction
 
 function! webapi#http#encodeURI(items, ...) abort

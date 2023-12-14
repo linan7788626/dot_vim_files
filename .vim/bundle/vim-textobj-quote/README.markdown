@@ -1,12 +1,11 @@
 # vim-textobj-quote
 
+[![Vader](https://github.com/preservim/vim-textobj-quote/workflows/Vader/badge.svg)](https://github.com/preservim/vim-textobj-quote/actions?workflow=Vader)
+[![Vint](https://github.com/preservim/vim-textobj-quote/workflows/Vint/badge.svg)](https://github.com/preservim/vim-textobj-quote/actions?workflow=Vint)
+
 > “Extending Vim to better support typographic (‘curly’) quote characters.”
 
-*Note: this project replaces the deprecated [vim-quotable][vq]*
-
-[vq]: https://github.com/reedes/vim-quotable
-
-While Vim is renown for its text manipulation capabilities, it
+While Vim is renowned for its text manipulation capabilities, it
 nevertheless retains a bias towards ASCII that stretches back to its vi
 roots on Unix. This can limit Vim’s appeal for those who prefer
 typographic characters like “curly quotes” over ASCII "straight quotes" in
@@ -39,7 +38,7 @@ manager.
 
 This plugin has an essential dependency that you will need to install:
 
-* [kana/vim-textobject-user][vt] - a Vim plugin to create your own text objects without pain
+* [kana/vim-textobj-user][vt] - a Vim plugin to create your own text objects without pain
 
 [vt]: https://github.com/kana/vim-textobj-user
 
@@ -187,10 +186,11 @@ map <silent> <leader>qc <Plug>ReplaceWithCurly
 map <silent> <leader>qs <Plug>ReplaceWithStraight
 ```
 
-Both _Normal_ and _Visual_ modes are supported by this feature.
+Both _Normal_ and _Visual_ modes are supported by this feature. (In
+_Normal_ mode, quotes in the current paragraph are replaced.)
 
-To transform all quotes in a document, use _Visual_ mode to select all the
-text in the document.
+To transform all quotes in a document, use _Visual_ mode to select the
+entire document.
 
 ### Surround support
 
@@ -297,12 +297,11 @@ nnoremap <silent> <leader>qd :call textobj#quote#init({ 'double':'„“', 'sing
 
 ## See also
 
-If you find this plugin useful, check out these others by [@reedes][re]:
+If you find this plugin useful, check out these others originally by [@reedes][re]:
 
 * [vim-colors-pencil][cp] - color scheme for Vim inspired by IA Writer
 * [vim-lexical][lx] - building on Vim’s spell-check and thesaurus/dictionary completion
 * [vim-litecorrect][lc] - lightweight auto-correction for Vim
-* [vim-one][vo] - make use of Vim’s _+clientserver_ capabilities
 * [vim-pencil][pn] - rethinking Vim as a tool for writers
 * [vim-textobj-sentence][ts] - improving on Vim's native sentence motion command
 * [vim-thematic][th] - modify Vim’s appearance to suit your task and environment
@@ -311,22 +310,21 @@ If you find this plugin useful, check out these others by [@reedes][re]:
 * [vim-wordchipper][wc] - power tool for shredding text in Insert mode
 
 [re]: http://github.com/reedes
-[cp]: http://github.com/reedes/vim-colors-pencil
-[lx]: http://github.com/reedes/vim-lexical
-[lc]: http://github.com/reedes/vim-litecorrect
-[vo]: http://github.com/reedes/vim-one
-[pn]: http://github.com/reedes/vim-pencil
-[th]: http://github.com/reedes/vim-thematic
-[ts]: http://github.com/reedes/vim-textobj-sentence
-[wh]: http://github.com/reedes/vim-wheel
-[wo]: http://github.com/reedes/vim-wordy
-[wc]: http://github.com/reedes/vim-wordchipper
+[cp]: http://github.com/preservim/vim-colors-pencil
+[lc]: http://github.com/preservim/vim-litecorrect
+[lx]: http://github.com/preservim/vim-lexical
+[pn]: http://github.com/preservim/vim-pencil
+[th]: http://github.com/preservim/vim-thematic
+[ts]: http://github.com/preservim/vim-textobj-sentence
+[wc]: http://github.com/preservim/vim-wordchipper
+[wh]: http://github.com/preservim/vim-wheel
+[wo]: http://github.com/preservim/vim-wordy
 
 ## Future development
 
 If you’ve spotted a problem or have an idea on improving this plugin,
-please post it to the github project issue page.
+please post it to the [GitHub project issue page][issues].
 
-Needs better integration with existing surround plugins.
+[issues]: https://github.com/preservim/vim-textobj-quote/issues
 
 <!-- vim: set tw=74 :-->

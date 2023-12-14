@@ -195,6 +195,27 @@ function! sy#util#popup_create(hunkdiff) abort
   return 1
 endfunction
 
+" #numhl {{{1
+try
+  sign define SyTest numhl=Number
+  let s:use_numhl = 1
+  sign undefine SyTest
+catch
+  let s:use_numhl = 0
+endtry
+
+function! sy#util#numhl(hlgroup) abort
+  if !s:use_numhl
+    return ''
+  endif
+
+  if get(g:, 'signify_number_highlight')
+    return printf('numhl=%s', a:hlgroup)
+  else
+    return 'numhl='
+  endif
+endfunction
+
 " s:offset {{{1
 function! s:offset() abort
   let offset = &foldcolumn
@@ -208,3 +229,39 @@ function! s:offset() abort
   endif
   return offset
 endfunction
+
+" #get_signs {{{1
+if exists('*sign_getplaced')
+  function! sy#util#get_signs(bufnr)
+    return sign_getplaced(a:bufnr)[0].signs
+  endfunction
+else
+  function! sy#util#get_signs(bufnr)
+    let buf = bufnr(a:bufnr)
+    let signs = []
+
+    let signlist = execute('sign place buffer='. buf)
+    for signline in split(signlist, '\n')[2:]
+      let tokens = matchlist(signline, '\v^\s+\S+\=(\d+)\s+\S+\=(\d+)\s+\S+\=(.{-})%(\s+\S+\=(\d+))=$')
+      let line   = str2nr(tokens[1])
+      let id     = str2nr(tokens[2])
+      let name   = tokens[3]
+      let priority = tokens[4]
+      if empty(priority)
+        " Older Vim versions didn't report priority, so set the default value
+        " manually
+        let priority = '10'
+      endif
+      let priority = str2nr(priority)
+      call add(signs, {
+            \ 'lnum': line,
+            \ 'id': id,
+            \ 'name': name,
+            \ 'priority': priority,
+            \ 'group': ''
+            \ })
+    endfor
+
+    return signs
+  endfunction
+endif
